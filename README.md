@@ -86,5 +86,5 @@ Website_Minh_Chung
 ## 📞 Liên hệ
 **Nguyễn Hoàng Phong**
 * **Email:** nguyenhoangphongsupham@gmail.com
-* **LinkedIn:** [Nguyễn Hoàng Phong](https://www.linkedin.com/in/nguy%E1%BB%85n-ho%C3%A0ng-phong-a95135354/)
+* **LinkedIn:** [Nguyễn Hoàng Phong](https://www.linkedin.com/in/fong62/)
 * **GitHub:** [Fong62](https://github.com/Fong62)
