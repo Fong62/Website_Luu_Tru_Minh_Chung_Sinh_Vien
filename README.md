@@ -44,6 +44,34 @@
     ```
     Truy cập `https://localhost:44369` (hoặc cổng hiển thị trên terminal) để bắt đầu sử dụng.
 
+4. Hướng dẫn Đăng nhập (Tài khoản mẫu)
+Sau khi khởi chạy ứng dụng, hệ thống sẽ tự động khởi tạo (Seed Data) các tài khoản mặc định dựa trên cấu trúc trong SeedUser. Bạn có thể sử dụng các tài khoản sau để trải nghiệm các phân quyền khác nhau:
+
+1. Tài khoản Quản trị viên (Admin)
+Email: admin
+
+Mật khẩu: admin@123 (Hoặc mật khẩu mặc định được cấu hình trong SeedUser)
+
+Quyền hạn: Quản lý toàn bộ hệ thống, duyệt minh chứng, tạo hoạt động mới.
+
+2. Tài khoản Sinh viên
+Email: 48.01.104.106
+
+Mật khẩu: Sv@123456
+
+Quyền hạn: Đăng ký hoạt động, upload ảnh minh chứng và xem kết quả rèn luyện cá nhân.
+
+3. Tài khoản Ban cán sự / Giảng viên
+Email Giảng viên: LMT
+
+Mật khẩu: Gv@123456
+
+Email Ban cán sự: 48.01.104.059
+
+Mật khẩu: Sv@123456
+
+Quyền hạn: Theo dõi tiến độ của lớp và hỗ trợ quản lý minh chứng theo phân quyền.
+
 ## 📂 Cấu trúc thư mục
 ```text
 Website_Minh_Chung
