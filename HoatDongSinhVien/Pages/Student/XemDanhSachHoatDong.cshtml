@@ -1,0 +1,126 @@
+﻿@page "/xem-danh-sach-hoat-dong"
+@model HoatDongSinhVien.Pages.Student.XemDanhSachHoatDongModel
+@{
+    ViewData["Title"] = "Danh Sách Hoạt Động";
+}
+
+<div class="container">
+    <h2>Danh Sách Hoạt Động</h2>
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="mb-3">
+            <a asp-page="/Admin/TaoHoatDong" class="btn btn-primary">
+                ➕ Tạo Hoạt Động
+            </a>
+        </div>
+    }
+
+    <div class="accordion" id="accordionFilter">
+        <div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <button class="btn btn-link p-0 text-decoration-none"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseFilter">
+                    <i class="bi bi-funnel-fill fs-5"></i>
+                </button>
+            </div>
+
+            <div id="collapseFilter" class="collapse" aria-labelledby="headingOne" data-bs-parent="#accordionFilter">
+                <div class="card-body">
+                    <!-- Form bộ lọc -->
+                    <form method="get">
+                        <div class="form-group">
+                            <label for="NgayToChucFilter">Ngày Tổ Chức:</label>
+                            <input type="date" class="form-control" id="NgayToChucFilter" name="NgayToChucFilter" value="@Model.NgayToChucFilter?.ToString("yyyy-MM-dd")" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="LinhVucFilter" class="control-label">Lĩnh Vực:</label>
+                            <select name="LinhVucFilter" class="form-control">
+                                <option value="">Chọn Lĩnh Vực</option>
+                                @foreach (var linhVuc in Model.LinhVucList)
+                                {
+                                    <option value="@linhVuc.IDLinhVuc"
+                                    selected="@(Model.LinhVucFilter == linhVuc.IDLinhVuc)">
+                                        @linhVuc.TenLinhVuc
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="TenHoatDongFilter" class="control-label">Tên Hoạt Động:</label>
+                            <input type="text" class="form-control" id="TenHoatDongFilter" name="TenHoatDongFilter" value="@Model.TenHoatDongFilter" />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Lọc</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hiển thị danh sách hoạt động -->
+    @if (Model.HoatDongs != null && Model.HoatDongs.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr class="text-center">
+                    <th>Tên Hoạt Động</th>
+                    <th>Lĩnh Vực</th>
+                    <th>Ngày Tổ Chức</th>
+                    <th>Trạng Thái</th>
+                    <th>Thang Điểm</th>
+                    <th>Chi Tiết</th>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <th>Chỉnh sửa</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var hoatDong in Model.HoatDongs)
+                {
+                    if (!User.IsInRole("Admin") && hoatDong.TrangThaiHienThi.Trim() == "Ẩn")
+                    {
+                        continue;
+                    }
+                    <tr>
+                        <td>@hoatDong.TenHoatDong</td>
+                        <td>@hoatDong.LinhVuc?.TenLinhVuc</td>
+                        <td class="text-center">@hoatDong.NgayToChuc.ToString("dd/MM/yyyy")</td>
+                        <td class="text-center">@hoatDong.TrangThaiHienThi</td>
+                        <td class="text-center">@hoatDong.LinhVuc?.ThangDiem</td>
+                        <td>
+                            <a asp-page="XemHoatDong" asp-route-IDHoatDong="@hoatDong.IDHoatDong" class="btn btn-primary">Xem Chi Tiết</a>
+                        </td>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <td class="text-center">
+                                <a asp-page="/Admin/SuaHoatDong" asp-route-IDHoatDong="@hoatDong.IDHoatDong" class="btn btn-primary">Chỉnh sửa</a>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Không có hoạt động nào.</p>
+    }
+
+</div>
+
+<div class="container-fluid mt-4 pagination-container">
+    <div page-model="@Model.PagingInfo"
+         page-name="/Student/XemDanhSachHoatDong"
+         page-classes-enabled="true"
+         page-class="btn"
+         page-class-normal="btn-outline-secondary"
+         page-class-selected="btn-primary"
+         ngay-to-chuc-filter="@Model.NgayToChucFilter"
+         linh-vuc-filter="@Model.LinhVucFilter"
+         ten-hoat-dong-filter="@Model.TenHoatDongFilter">
+    </div>
+</div>

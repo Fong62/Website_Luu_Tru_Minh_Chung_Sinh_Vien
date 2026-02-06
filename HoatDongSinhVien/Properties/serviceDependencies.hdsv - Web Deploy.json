@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('serviceConnectorResourceGroupName')]/providers/Microsoft.Web/sites/hdsv/providers/Microsoft.ServiceLinker/linkers/ConnectionStringsDefaultString_D73636A70D",
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/hdsv/databases/HoatDongSinhVien",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:DefaultString",
+      "dynamicId": null
+    }
+  }
+}

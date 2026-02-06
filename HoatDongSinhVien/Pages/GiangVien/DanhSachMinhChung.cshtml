@@ -1,0 +1,124 @@
+﻿@page "/giang-vien/minh-chung"
+@model HoatDongSinhVien.Pages.GiangVien.DanhSachMinhChungModel
+@{
+    ViewData["Title"] = "Danh sách minh chứng";
+}
+
+@* --- 1. KHU VỰC HIỂN THỊ THÔNG BÁO (Đưa hết lên đầu) --- *@
+<div class="container mt-3">
+    @* Thông báo thành công (Màu xanh) *@
+    @if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @Model.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @* Thông báo lỗi (Màu vàng/đỏ) - QUAN TRỌNG: Code của bạn đang thiếu icon hoặc class để nổi bật *@
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> <strong>Lưu ý:</strong> @Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+</div>
+
+<div class="container mt-4">
+    <h2>Danh sách minh chứng</h2>
+
+    <form method="get" class="row g-2 mb-3">
+        <!-- Chọn Học Kỳ / Năm học -->
+        <div class="col-md-4">
+            <select class="form-control" asp-for="IDHocKy" asp-items="@(new SelectList(Model.HocKys, "IDHocKy", "TenHocKy"))" onchange="this.form.submit()">
+                <option value="">Chọn năm học</option>
+            </select>
+        </div>
+
+        <!-- Chọn Hoạt động -->
+        <div class="col-md-4">
+            <select class="form-control" asp-for="IDHoatDong" asp-items="@(new SelectList(Model.HoatDongs, "IDHoatDong", "TenHoatDong"))" disabled="@(string.IsNullOrWhiteSpace(Model.IDHocKy) ? "disabled" : null)">
+                <option value="">Chọn hoạt động</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100" type="submit">Lọc</button>
+        </div>
+
+        <div class="col-md-2">
+            <a class="btn btn-outline-secondary w-100" href="/giang-vien/minh-chung">Xóa lọc</a>
+        </div>
+    </form>
+
+    @if (Model.MinhChungs == null || !Model.MinhChungs.Any())
+    {
+        <div class="alert alert-info">Không có minh chứng nào.</div>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>MSSV</th>
+                    <th>Họ tên</th>
+                    <th>Thời gian điểm danh</th>
+                    <th>Trạng thái</th>
+                    <th>Hình ảnh</th>
+                    <th>Lý do thất bại</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var mc in Model.MinhChungs)
+                {
+                    <tr>
+                        <td>@mc.MSSV</td>
+                        <td>@(mc.SinhVien?.HoTen ?? "-")</td>
+                        <td>@mc.ThoiGianDiemDanh.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@(mc.TrangThaiHienThi ?? "-")</td>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(mc.AnhTheSV))
+                            {
+                                <a href="@mc.AnhTheSV"
+                                   data-lightbox="minhchung-@Model.IDHoatDong"
+                                   data-title="MSSV: @mc.MSSV"
+                                   class="btn btn-sm btn-outline-primary">
+                                    Xem chi tiết
+                                </a>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </td>
+                        <td>@(mc.LyDoThatBai ?? "-")</td>
+                        <td>
+                            <form method="post" asp-page-handler="Duyet" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="mssv" value="@mc.MSSV" />
+                                <input type="hidden" name="idHoatDong" value="@mc.IDHoatDong" />
+                                <button type="submit"
+                                        class="btn btn-sm btn-success"
+                                @(mc.TrangThaiHienThi == "Đã duyệt" ? "disabled" : "")>
+                                    Duyệt
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+ <div class="container-fluid mt-4 pagination-container">
+        <div page-model="@Model.PagingInfo"
+             page-name="/GiangVien/DanhSachMinhChung"
+             page-classes-enabled="true"
+             page-class="btn"
+             page-class-normal="btn-outline-secondary"
+             page-class-selected="btn-primary"
+             id-hoat-dong="@Model.IDHoatDong">
+        </div>
+    </div>

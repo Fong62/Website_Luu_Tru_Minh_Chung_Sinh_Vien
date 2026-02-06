@@ -1,0 +1,97 @@
+﻿@page "/xem-danh-sach-dang-ky/{IDHoatDong}"
+@model HoatDongSinhVien.Pages.Admin.XemDanhSachDangKyHoatDongModel
+
+@{
+    ViewData["Title"] = "Danh Sách Đăng Ký Hoạt Động";
+}
+
+<h2>Danh sách đăng ký tham gia hoạt động: @Model.TenHoatDong</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (!ModelState.IsValid)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Đã có lỗi xảy ra:</strong>
+        <div asp-validation-summary="All" class="text-danger mb-0"></div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- Nút Import Excel -->
+<form method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="fileUpload">Chọn file Excel để import</label>
+        <input type="file" name="fileUpload" id="fileUpload" class="form-control" />
+    </div>
+
+    <input type="hidden" name="IDHoatDong" value="@Model.IDHoatDong" />
+    <button type="submit" class="btn btn-success float-right" asp-page-handler="ImportExcel">Import Excel</button>
+</form>
+
+<!-- Bộ lọc Khoa -->
+<form method="get">
+    <select class="form-control" name="KhoaFilter">
+        <option value="">Chọn Khoa</option>
+        @foreach (var khoa in Model.Faculties)
+        {
+            var slug = khoa.Replace(" ", "-");
+            <option value="@slug" selected="@(Model.KhoaFilter == slug)">
+                @khoa
+            </option>
+        }
+    </select>
+
+    <button type="submit" class="btn btn-primary">Lọc</button>
+</form>
+
+
+<!-- Danh sách đăng ký -->
+@if (Model.DangKyHoatDongs != null && Model.DangKyHoatDongs.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã Sinh Viên</th>
+                <th>Tên Sinh Viên</th>
+                <th>Lớp</th>
+                <th>Tên Khoa</th>
+                <th>Thời Gian Đăng Ký</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.DangKyHoatDongs)
+            {
+                <tr>
+                    <td>@item.MSSV</td>
+                    <td>@item.HoTen</td>
+                    <td>@item.SinhVien.IDLop - @item.SinhVien.Lop.TenLop</td>
+                    <td>@item.TenKhoa</td>
+                    <td>@item.ThoiGianDangKy.ToString("dd/MM/yyyy HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Không có dữ liệu đăng ký.</p>
+}
+
+<!-- Thêm container cho phân trang -->
+<div class="container-fluid mt-4 pagination-container">
+    <div page-model="@Model.PagingInfo"
+         page-name="/Admin/XemDanhSachDangKyHoatDong"
+         page-classes-enabled="true"
+         page-class="btn"
+         page-class-normal="btn-outline-secondary"
+         page-class-selected="btn-primary"
+         page-url-IDHoatDong="@Model.IDHoatDong"
+         page-url-KhoaFilter="@Model.KhoaFilter">
+    </div>
+</div>

@@ -1,0 +1,76 @@
+﻿@page "/student/diem-danh-hoat-dong/{IDHoatDong}"
+@model HoatDongSinhVien.Pages.Student.DiemDanhHoatDongModel
+@{
+    ViewData["Title"] = "Điểm Danh Hoạt Động";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">
+                📌 @ViewData["Title"]
+            </h4>
+        </div>
+
+        <div class="card-body">
+
+            @* Thông báo *@
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    @TempData["Error"]
+                </div>
+            }
+
+            @if (TempData["ErrorDiemDanh"] != null)
+            {
+                <div class="alert alert-danger">
+                    <i class="bi bi-x-circle-fill"></i>
+                    @TempData["ErrorDiemDanh"]
+                </div>
+            }
+
+            @if (TempData["SuccessDiemDanh"] != null)
+            {
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle-fill"></i>
+                    @TempData["SuccessDiemDanh"]
+                </div>
+            }
+
+            <form enctype="multipart/form-data" method="post">
+                <div class="mb-3">
+                    <label for="AnhThe" class="form-label fw-semibold">
+                        Ảnh thẻ sinh viên
+                    </label>
+
+                    <input type="file"
+                           class="form-control"
+                           id="AnhThe"
+                           name="AnhThe"
+                           accept="image/*"
+                           required />
+
+                    <div class="form-text">
+                        Chỉ chấp nhận ảnh (.jpg, .png). Nên dùng ảnh rõ nét .
+                    </div>
+                </div>
+
+                <input type="hidden" name="IDHoatDong" value="@Model.IDHoatDong" />
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-camera-fill"></i> Điểm danh
+                    </button>
+
+                    <a asp-page="/Student/XemHoatDong" asp-route-IDHoatDong="@Model.IDHoatDong"
+                       class="btn btn-outline-secondary">
+                        ⬅ Quay lại
+                    </a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

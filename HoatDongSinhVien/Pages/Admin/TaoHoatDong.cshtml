@@ -1,0 +1,99 @@
+﻿@page "/tao-hoat-dong"
+@model HoatDongSinhVien.Pages.Admin.TaoHoatDongModel
+@{
+    ViewData["Title"] = "Tạo Hoạt Động Mới";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0 fw-bold"><i class="bi bi-plus-circle-fill"></i> Tạo Hoạt Động Mới</h3>
+        </div>
+
+        <div class="card-body">
+            <form method="post">
+                <div class="mb-3">
+                    <label asp-for="HoatDong.TenHoatDong" class="form-label fw-bold"></label>
+                    <input asp-for="HoatDong.TenHoatDong" class="form-control" placeholder="Nhập tên hoạt động..." required />
+                    <span asp-validation-for="HoatDong.TenHoatDong" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="HoatDong.MoTa" class="form-label fw-bold"></label>
+                    <textarea asp-for="HoatDong.MoTa" class="form-control" rows="3" placeholder="Mô tả nội dung hoạt động..."></textarea>
+                    <span asp-validation-for="HoatDong.MoTa" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="HoatDong.IDLinhVuc" class="form-label fw-bold"></label>
+                        <select asp-for="HoatDong.IDLinhVuc" class="form-select" required>
+                            <option value="">-- Chọn Lĩnh Vực --</option>
+                            @foreach (var linhVuc in Model.LinhVucs)
+                            {
+                                <option value="@linhVuc.IDLinhVuc">@linhVuc.TenLinhVuc - @linhVuc.ThangDiem Điểm</option>
+                            }
+                        </select>
+                        <span asp-validation-for="HoatDong.IDLinhVuc" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="HoatDong.NgayToChuc" class="form-label fw-bold"></label>
+                        <input asp-for="HoatDong.NgayToChuc" class="form-control" type="date" required />
+                        <span asp-validation-for="HoatDong.NgayToChuc" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="HoatDong.IDHocKy" class="form-label fw-bold"></label>
+                        <select asp-for="HoatDong.IDHocKy" class="form-select" required>
+                            <option value="">-- Chọn Học Kỳ --</option>
+                            @foreach (var hk in Model.HocKys)
+                            {
+                                <option value="@hk.IDHocKy">@hk.TenHocKy</option>
+                            }
+                        </select>
+                        <span asp-validation-for="HoatDong.IDHocKy" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-3">
+                    <a asp-page="/Student/XemDanhSachHoatDong" class="btn btn-secondary me-2">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </a>
+                    <button type="submit" class="btn btn-primary fw-bold">
+                        <i class="bi bi-check-lg"></i> Tạo Hoạt Động
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model.QRCodeDangKyUrl != null || Model.QRCodeDiemDanhUrl != null)
+    {
+        <div class="row mt-4">
+            @if (Model.QRCodeDangKyUrl != null)
+            {
+                <div class="col-md-6 mb-3">
+                    <div class="card text-center border-primary h-100">
+                        <div class="card-header bg-primary text-white">QR Đăng Ký</div>
+                        <div class="card-body">
+                            <img src="@Model.QRCodeDangKyUrl" alt="QR Code Đăng Ký" class="img-fluid" style="max-height: 200px;" />
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (Model.QRCodeDiemDanhUrl != null)
+            {
+                <div class="col-md-6 mb-3">
+                    <div class="card text-center border-success h-100">
+                        <div class="card-header bg-success text-white">QR Điểm Danh</div>
+                        <div class="card-body">
+                            <img src="@Model.QRCodeDiemDanhUrl" alt="QR Code Điểm Danh" class="img-fluid" style="max-height: 200px;" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

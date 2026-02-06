@@ -1,0 +1,181 @@
+﻿@page "/xem-hoat-dong-lop-tham-gia"
+@model HoatDongSinhVien.Pages.GiangVien.XemHoatDongLopThamGiaModel
+@{
+    ViewData["Title"] = "Tổng điểm rèn luyện sinh viên lớp cố vấn";
+}
+
+<div class="container mt-4">
+    <h2>Tổng điểm rèn luyện sinh viên lớp mình cố vấn</h2>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-warning alert-dismissible fade show mt-3">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (User.IsInRole("GiaoVien"))
+    {
+        <form method="get" class="row g-2 mb-3"
+              asp-route-SelectedLop="@Model.SelectedLop"
+              asp-route-SelectedHocKy="@Model.SelectedHocKy">
+            <div class="col-md-4">
+                <select asp-for="SelectedHocKy" asp-items="Model.HocKyList" class="form-control">
+                    <option value="">-- Chọn học kỳ --</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <select asp-for="SelectedLop" asp-items="Model.LopList" class="form-control">
+                    <option value="">-- Chọn lớp --</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Xem</button>
+            </div>
+
+            <div class="col-md-2">
+                <a asp-page="/GiangVien/XemHoatDongLopThamGia"
+                   class="btn btn-outline-secondary w-100">Xóa lọc</a>
+            </div>
+        </form>
+    }
+    @if (User.IsInRole("BanCanSu"))
+    {
+        <form method="get" class="row g-2 mb-3"
+              asp-route-SelectedLop="@Model.SelectedLop"
+              asp-route-SelectedHocKy="@Model.SelectedHocKy">
+            <div class="col-md-4">
+                <select asp-for="SelectedHocKy" asp-items="Model.HocKyList" class="form-control">
+                    <option value="">-- Chọn học kỳ --</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <input type="text"
+                       class="form-control"
+                       value="@Model.SelectedLop - @Model.TenLop"
+                       disabled />
+                <input type="hidden" asp-for="SelectedLop" />
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Xem</button>
+            </div>
+
+            <div class="col-md-2">
+                <a asp-page="/GiangVien/XemHoatDongLopThamGia"
+                   class="btn btn-outline-secondary w-100">Xóa lọc</a>
+            </div>
+        </form>
+    }
+
+
+
+
+    <form method="post" asp-page-handler="ExportExcel" id="formExportExcel" class="mb-3">
+        <input type="hidden" asp-for="SelectedHocKy" id="SelectedHocKyHidden" />
+        <input type="hidden" asp-for="SelectedLop" id="SelectedLopHidden" />
+        <button type="submit" class="btn btn-success">
+            <i class="bi bi-file-earmark-excel"></i> Export Excel
+        </button>
+    </form>
+
+    @if (Model.SinhViens == null || !Model.SinhViens.Any())
+    {
+        <div class="alert alert-info">Không có sinh viên hoặc dữ liệu học kỳ.</div>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>MSSV</th>
+                    <th>Họ tên</th>
+                    <th>Lớp</th>
+                    <th>Tổng điểm rèn luyện</th>
+                    <th>Thành tích</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sv in Model.SinhViens)
+                {
+                    var kq = sv.KetQuaRenLuyens.FirstOrDefault();
+                    <tr>
+                        <td>@sv.MSSV</td>
+                        <td>@sv.HoTen</td>
+                        <td>@sv.Lop?.IDLop - @sv.Lop?.TenLop</td>
+                        <td>@(kq?.DiemRenLuyen ?? 0)</td>
+                        <td>@(kq?.ThanhTich ?? "-")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+ <div class="container-fluid mt-4 pagination-container">
+        <div page-model="@Model.PagingInfo"
+             page-name="/GiangVien/XemHoatDongLopThamGia"
+             page-classes-enabled="true"
+             page-class="btn"
+             page-class-normal="btn-outline-secondary"
+             page-class-selected="btn-primary"
+             selected-hoc-ky="@Model.SelectedHocKy"
+             selected-lop="@Model.SelectedLop">
+        </div>
+  </div>
+
+
+
+@section Scripts{
+    <script>
+        function showLoading() {
+            document.getElementById("global-loading").style.display = "block";
+        }
+
+        function hideLoading() {
+            document.getElementById("global-loading").style.display = "none";
+        }
+
+        $(document).ready(function () {
+            $('#formExportExcel').on('submit', function () {
+                var hocKy = $('#SelectedHocKy').val();
+                var lop = $('#SelectedLop').val();
+
+                showLoading();
+
+                fileDownloadCheckTimer = window.setInterval(function () {
+                    if (document.cookie.indexOf("fileDownloadToken=true") > -1) {
+                        hideLoading();
+                        window.clearInterval(fileDownloadCheckTimer);
+                        document.cookie = "fileDownloadToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    }
+                }, 500);
+            });
+        });
+
+        document.querySelectorAll("form:not(#formExportExcel)").forEach(form => {
+            form.addEventListener("submit", function () {
+                if (form.checkValidity()) {
+                    showLoading();
+                }
+            });
+        });
+
+        window.addEventListener("load", function () {
+            hideLoading();
+        });
+
+        $('select[name="SelectedHocKy"]').change(function() {
+            $('#SelectedHocKyHidden').val($(this).val());
+        });
+        $('select[name="SelectedLop"]').change(function() {
+            $('#SelectedLopHidden').val($(this).val());
+        });
+        $('#SelectedHocKyHidden').val($('select[name="SelectedHocKy"]').val());
+        $('#SelectedLopHidden').val($('select[name="SelectedLop"]').val());
+
+    </script>
+}

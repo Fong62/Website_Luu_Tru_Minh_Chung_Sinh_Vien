@@ -1,0 +1,189 @@
+﻿@page "/xem-hoat-dong-tham-gia/"
+@model HoatDongSinhVien.Pages.Student.XemHoatDongThamGiaModel
+@using HoatDongSinhVien.Models
+@{
+    ViewData["Title"] = "Hoạt động tham gia";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 style="color: #1a237e; font-weight: 700;">Hoạt động sinh viên đã tham gia</h2>
+
+        @if (Model.KetQuaTongKet != null)
+        {
+            <div class="alert alert-success m-0 py-2 px-4 shadow-sm" style="background-color: #d4edda; color: #155724; border-color: #c3e6cb;">
+                <span class="fw-bold">TỔNG ĐIỂM HK: @Model.KetQuaTongKet.DiemRenLuyen</span>
+                @if (!string.IsNullOrEmpty(Model.KetQuaTongKet.ThanhTich))
+                {
+                    <span class="ms-2 badge bg-primary">@Model.KetQuaTongKet.ThanhTich</span>
+                }
+            </div>
+        }
+    </div>
+
+    <div class="table-card mb-4" style="padding: 15px; margin-top: 0;">
+        <form method="get" class="row g-2 align-items-center">
+            <div class="col-md-8">
+                <label class="form-label text-muted small fw-bold">Chọn học kỳ</label>
+                <select asp-for="SelectedHocKy" asp-items="Model.HocKyList" class="form-control mb-0" onchange="this.form.submit()">
+                    <option value="">-- Tất cả học kỳ --</option>
+                </select>
+            </div>
+            <div class="col-md-2 align-self-end">
+                <button type="submit" class="btn btn-primary w-100"><i class="fas fa-filter me-2"></i>Xem</button>
+            </div>
+            <div class="col-md-2 align-self-end">
+                <a asp-page="/student/xemhoatdongthamgia" class="btn btn-outline-secondary w-100"><i class="fas fa-sync-alt me-2"></i>Xóa lọc</a>
+            </div>
+        </form>
+    </div>
+
+    @if (Model.MinhChungList == null || !Model.MinhChungList.Any())
+    {
+        <div class="alert alert-info shadow-sm border-0" role="alert">
+            <i class="fas fa-info-circle me-2"></i> Không tìm thấy dữ liệu hoạt động nào.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <div class="table-card h-100 text-center">
+                    <h5 class="mb-3 text-primary fw-bold">Thống kê theo lĩnh vực</h5>
+                    <div style="width: 100%; max-width: 250px; margin: auto;">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8 mb-4">
+                <div class="table-card h-100">
+                    <h5 class="mb-3 text-primary fw-bold">Danh sách chi tiết</h5>
+                    <div class="table-responsive">
+                        <table class="table custom-table align-middle">
+                            <thead>
+                                <tr class="text-center">
+                                    <th>Tên hoạt động</th>
+                                    <th>Ngày tổ chức</th>
+                                    <th>Lĩnh vực</th>
+                                    <th >Minh chứng</th>
+                                    <th>Điểm</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.MinhChungList)
+                                {
+                                    <tr>
+                                        <td>
+                                            <span class="fw-bold text-dark">@item.HoatDong.TenHoatDong</span>
+                                        </td>
+                                        <td class="text-center">@item.HoatDong.NgayToChuc.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            <span class="badge bg-light text-dark border">
+                                                @(item.HoatDong.LinhVuc?.TenLinhVuc ?? "-")
+                                            </span>
+                                        </td>
+
+                                        <td class="text-center">
+                                            @if (!string.IsNullOrEmpty(item.AnhTheSV))
+                                            {
+                                                <img src="@item.AnhTheSV"
+                                                     class="rounded border"
+                                                     style="width: 50px; height: 50px; object-fit: cover; cursor: pointer;"
+                                                     onclick="showImage('@item.AnhTheSV')"
+                                                     title="Xem ảnh lớn" />
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted small">--</span>
+                                            }
+                                        </td>
+
+                                        <td class="text-center">
+                                            <span class="fw-score" style="color: #dc3545; font-weight: bold;">
+                                                +@(item.HoatDong.LinhVuc?.ThangDiem ?? 0)
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-transparent border-0">
+            <div class="modal-body p-0 text-center position-relative">
+                <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"></button>
+                <img id="previewImage" src="" class="img-fluid rounded shadow-lg" style="max-height: 85vh;" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@{
+    // Cập nhật Logic lấy dữ liệu Chart từ MinhChungList
+    var chartData = Model.MinhChungList
+        .Where(mc => mc.HoatDong.LinhVuc != null)
+        .GroupBy(mc => mc.HoatDong.LinhVuc.TenLinhVuc) // Group theo Tên hiển thị cho đẹp
+        .Select(g => new
+        {
+            LinhVuc = g.Key,
+            TongDiem = g.Sum(x => x.HoatDong.LinhVuc.ThangDiem)
+        })
+        .ToList();
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Hàm mở Modal ảnh (Mới)
+        function showImage(url) {
+            var modal = new bootstrap.Modal(document.getElementById('imageModal'));
+            document.getElementById('previewImage').src = url;
+            modal.show();
+        }
+
+        // Code Chart cũ giữ nguyên (chỉ thay đổi nguồn data truyền vào)
+        var labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                chartData.Select(x => x.LinhVuc)
+        ));
+
+         var data = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+             chartData.Select(x => x.TongDiem)
+         ));
+
+        if (labels.length > 0) {
+            var ctx = document.getElementById('pieChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            'rgba(26, 35, 126, 0.8)',
+                            'rgba(37, 140, 251, 0.8)',
+                            'rgba(240, 173, 78, 0.8)',
+                            'rgba(40, 167, 69, 0.8)',
+                            'rgba(23, 162, 184, 0.8)',
+                            'rgba(220, 53, 69, 0.8)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+    </script>
+}

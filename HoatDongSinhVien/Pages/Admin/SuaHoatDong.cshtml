@@ -1,0 +1,88 @@
+﻿@page "/sua-hoat-dong/{IDHoatDong}"
+@model HoatDongSinhVien.Pages.Admin.SuaHoatDongModel
+@{
+    ViewData["Title"] = "Sửa Hoạt Động";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0 fw-bold"><i class="bi bi-pencil-square"></i> Sửa Hoạt Động</h3>
+        </div>
+
+        <div class="card-body">
+            <form method="post">
+                <!-- Hidden fields -->
+                <input type="hidden" asp-for="IDHoatDong" />
+                <input type="hidden" asp-for="OldName" />
+
+                <!-- Tên hoạt động mới -->
+                <div class="mb-3">
+                    <label asp-for="NewName" class="form-label fw-bold">Tên Hoạt Động</label>
+                    <input asp-for="NewName" class="form-control" placeholder="Nhập tên hoạt động mới..." required />
+                    <span asp-validation-for="NewName" class="text-danger"></span>
+                </div>
+
+                <!-- Mô tả mới -->
+                <div class="mb-3">
+                    <label asp-for="NewMoTa" class="form-label fw-bold">Mô Tả Mới</label>
+                    <textarea asp-for="NewMoTa" class="form-control" rows="3" placeholder="Mô tả nội dung hoạt động mới..."></textarea>
+                    <span asp-validation-for="NewMoTa" class="text-danger"></span>
+                </div>
+
+                <!-- Row: Ngày, Lĩnh vực, Học kỳ -->
+                <div class="row">
+                    <!-- Ngày tổ chức -->
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="NgayToChuc" class="form-label fw-bold">Ngày tổ chức</label>
+                        <input asp-for="NgayToChuc" type="date" class="form-control" required />
+                        <span asp-validation-for="NgayToChuc" class="text-danger"></span>
+                    </div>
+
+                    <!-- Lĩnh vực -->
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="SelectedIDLinhVuc" class="form-label fw-bold">Lĩnh vực</label>
+                        <select asp-for="SelectedIDLinhVuc" class="form-select" asp-items="Model.LinhVucList" required>
+                            <option value="">Chọn lĩnh vực</option>
+                        </select>
+                    </div>
+
+                    <!-- Học kỳ -->
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="SelectedIDHocKy" class="form-label fw-bold">Học kỳ</label>
+                        <select asp-for="SelectedIDHocKy" class="form-select" asp-items="Model.HocKyList" required>
+                            <option value="">Chọn học kỳ</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Trạng thái hiển thị -->
+                <div class="mb-3">
+                    <label asp-for="SelectedTrangThaiHienThi" class="form-label fw-bold">Trạng thái hiển thị</label>
+                    <select asp-for="SelectedTrangThaiHienThi" class="form-select" asp-items="Model.TrangThaiHienThiList" required>
+                        <option value="">Chọn trạng thái</option>
+                    </select>
+                </div>
+
+                <!-- Nút Hủy / Cập Nhật -->
+                <div class="d-flex justify-content-end mt-3">
+                    <a asp-page="/Student/XemDanhSachHoatDong" class="btn btn-secondary me-2">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </a>
+                    <button type="submit" class="btn btn-primary fw-bold">
+                        <i class="bi bi-check-lg"></i> Cập Nhật
+                    </button>
+                </div>
+            </form>
+
+            <!-- Hiển thị message -->
+            @if (Model.ResultMessage != null)
+            {
+                <div class="alert mt-3 @(Model.IsSuccess ? "alert-success" : "alert-danger") alert-dismissible fade show" role="alert">
+                    @Model.ResultMessage
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

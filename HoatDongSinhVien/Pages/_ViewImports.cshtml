@@ -1,0 +1,9 @@
+﻿@using HoatDongSinhVien
+@using HoatDongSinhVien.Models
+@using Microsoft.AspNetCore.Identity
+@using HoatDongSinhVien.Models.Application_User
+@using HoatDongSinhVien.Infrastructure
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, HoatDongSinhVien
+@inject SignInManager<ApplicationUser> signInManager
+@inject UserManager<ApplicationUser> userManager

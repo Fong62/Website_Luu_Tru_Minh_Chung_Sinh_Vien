@@ -1,0 +1,164 @@
+﻿<aside class="sidebar">
+    <div class="sidebar-header">
+        <img src="~/img/Logo.png" alt="HCMUE Logo" class="sidebar-logo">
+        <h3 class="sidebar-title">HCMUE</h3>
+        <p class="sidebar-subtitle">Hệ thống thông tin</p>
+
+    </div>
+    @if (signInManager.IsSignedIn(User))
+    {
+        <div class="sidebar-welcome">
+            <h2 class="hello-text">Hello, <span class="user-name">@User.Identity.Name</span></h2>
+        </div>
+    }
+    <nav class="sidebar-menu">
+        <div class="menu-group">DANH MỤC CHÍNH</div>
+        <ul>
+            @if (User.IsInRole("Admin"))
+            {
+                <li>
+                    <a asp-page="/Admin/ThongKeTongQuan" class="nav-link"><i class="fas fa-plus"></i> <span>Thống kê hoạt động</span></a>
+                </li>
+                <li>
+                    <a asp-page="/Admin/TaoHoatDong" class="nav-link"><i class="fas fa-plus"></i> <span>Tạo hoạt động</span></a>
+                </li>
+                <li>
+                    <a asp-page="/Student/XemDanhSachHoatDong" class="nav-link"><i class="fas fa-plus"></i> <span>Xem hoạt động</span></a>
+                </li>
+                <li>
+                    <a asp-page="/GiangVien/DanhSachMinhChung" class="nav-link"><i class="fas fa-plus"></i> <span>Xem danh sách minh chứng</span></a>
+                </li>
+                @* <li>
+                    <a asp-page="/GiangVien/XemHoatDongLopThamGia" class="nav-link"><i class="fas fa-plus"></i> <span>Xem hoạt động các lớp tham gia</span></a>
+                </li> *@
+            }
+            else if (User.IsInRole("BanCanSu"))
+            {
+                <li>
+                    <a asp-page="/GiangVien/ThongKeLop" class="nav-link"><i class="fas fa-plus"></i> <span>Thống kê hoạt động lớp</span></a>
+                </li>
+                <li>
+                    <a asp-page="/Student/XemDanhSachHoatDong" class="nav-link"><i class="fas fa-plus"></i> <span>Xem hoạt động</span></a>
+                </li>
+                <li>
+                    <a asp-page="/GiangVien/DanhSachMinhChung" class="nav-link"><i class="fas fa-plus"></i> <span>Xem danh sách minh chứng</span></a>
+                </li>
+                <li>
+                    <a asp-page="/Student/XemHoatDongThamGia" class="nav-link"><i class="fas fa-plus"></i> <span>Xem danh sách hoạt động đã tham gia</span></a>
+                </li>
+                <li>
+                    <a asp-page="/GiangVien/XemHoatDongLopThamGia" class="nav-link"><i class="fas fa-plus"></i> <span>Xem hoạt động lớp đã tham gia</span></a>
+                </li>
+            }
+            else if (User.IsInRole("GiaoVien"))
+            {
+                <li>
+                    <a asp-page="/GiangVien/ThongKeLop" class="nav-link"><i class="fas fa-plus"></i> <span>Thống kê hoạt động lớp</span></a>
+                </li>
+                <li>
+                    <a asp-page="/Student/XemDanhSachHoatDong" class="nav-link"><i class="fas fa-plus"></i> <span>Xem hoạt động</span></a>
+                </li>
+                <li>
+                    <a asp-page="/GiangVien/DanhSachMinhChung" class="nav-link"><i class="fas fa-plus"></i> <span>Xem danh sách minh chứng</span></a>
+                </li>
+                <li>
+                    <a asp-page="/GiangVien/XemHoatDongLopThamGia" class="nav-link"><i class="fas fa-plus"></i> <span>Xem điểm rèn luyện lớp</span></a>
+                </li>
+            }
+            else
+            {
+                <li>
+                    <a asp-page="/Student/XemDanhSachHoatDong" class="nav-link"><i class="fas fa-plus"></i> <span>Xem hoạt động</span></a>
+                </li>
+                <li>
+                    <a asp-page="/Student/XemHoatDongThamGia" class="nav-link"><i class="fas fa-plus"></i> <span>Xem danh sách hoạt động đã tham gia</span></a>
+                </li>
+            }
+            
+            
+        </ul>
+  
+        <div class="menu-group">CÀI ĐẶT</div>
+        <ul>
+            <li>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal"><i class="fas fa-key"></i> <span>Đổi mật khẩu</span></a>
+            </li>
+            <li class="logout">
+                <a asp-controller="Account" asp-action="Logout"><i class="fas fa-sign-out-alt"></i> <span>Đăng xuất</span></a>
+            </li>
+        </ul>
+    </nav>
+</aside>
+
+
+
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
+            <div class="modal-header bg-primary text-white border-0">
+                <h5 class="modal-title fw-bold"><i class="fas fa-lock me-2"></i>ĐỔI MẬT KHẨU</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form asp-controller="Account" asp-action="ChangePassword" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">MẬT KHẨU HIỆN TẠI</label>
+                        <input type="password" name="OldPassword" class="form-control custom-input" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">MẬT KHẨU MỚI</label>
+                        <input type="password" name="NewPassword" class="form-control custom-input" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">XÁC NHẬN MẬT KHẨU MỚI</label>
+                        <input type="password" name="ConfirmPassword" class="form-control custom-input" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2">CẬP NHẬT MẬT KHẨU</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@if (TempData["ChangePasswordSweetAlert"] != null)
+{
+    <script>
+        // Sử dụng window.onload hoặc document.ready để đảm bảo thư viện đã load xong
+        window.addEventListener('load', function () {
+            Swal.fire({
+                title: 'Thành công!',
+                text: '@Html.Raw(TempData["ChangePasswordSweetAlert"])',
+                icon: 'success',
+                confirmButtonColor: '#1a237e',
+                confirmButtonText: 'Ok',
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Chuyển hướng về Login/Logout
+                    window.location.href = '/Account/Login';
+                }
+            });
+        });
+    </script>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+        window.addEventListener('load', function () {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: '@Html.Raw(TempData["ErrorMessage"])',
+                icon: 'error',
+                confirmButtonText: 'Đóng'
+            });
+        });
+    </script>
+}

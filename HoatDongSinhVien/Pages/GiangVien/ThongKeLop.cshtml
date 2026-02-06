@@ -1,0 +1,181 @@
+﻿@page "/giang-vien/thong-ke-lop"
+@model HoatDongSinhVien.Pages.GiangVien.ThongKeLopModel
+@{
+    ViewData["Title"] = "Thống Kê Lớp Quản Lý";
+}
+
+<div class="container-fluid mt-3">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+            <h5 class="m-0 text-primary fw-bold"><i class="bi bi-bar-chart-steps"></i> Thống Kê Theo Lớp & Học Kỳ</h5>
+        </div>
+        <div class="card-body bg-light">
+            <form method="get" class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <label class="fw-bold text-muted">Chọn bộ lọc:</label>
+                </div>
+                <div class="col-md-3">
+                    <select asp-for="IDLop" asp-items="Model.LopHocs" class="form-select" onchange="this.form.submit()">
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select asp-for="IDHocKy" asp-items="Model.HocKys" class="form-select" onchange="this.form.submit()">
+                        <option value="">-- Tất cả học kỳ --</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-info shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-uppercase mb-2 opacity-75">Tổng Sinh Viên</h6>
+                    <h2 class="fw-bold m-0">@Model.TongSinhVien</h2>
+                    <small>Trong danh sách lọc</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-uppercase mb-2 opacity-75">SV Có Tham Gia</h6>
+                    <h2 class="fw-bold m-0">@Model.SinhVienThamGia</h2>
+                    <small>Tỷ lệ: @(Model.TongSinhVien > 0 ? (Model.SinhVienThamGia * 100 / Model.TongSinhVien) : 0)%</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-primary shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-uppercase mb-2 opacity-75">Tổng Lượt Đăng Ký</h6>
+                    <h2 class="fw-bold m-0">@Model.TongLuotDangKy</h2>
+                    <small>Số lượt tham gia HĐ</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-dark bg-warning shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-uppercase mb-2 opacity-75">Minh Chứng Chờ Duyệt</h6>
+                    <h2 class="fw-bold m-0">@Model.TongMinhChungChoDuyet</h2>
+                    <a asp-page="/GiangVien/DanhSachMinhChung" class="text-dark fw-bold small text-decoration-none">
+                        Duyệt ngay <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h6 class="m-0 text-primary fw-bold">Trạng thái minh chứng</h6>
+                </div>
+                <div class="card-body d-flex justify-content-center align-items-center">
+                    @if (Model.ChartValues.Sum() > 0)
+                    {
+                        <div style="width: 80%;">
+                            <canvas id="statusChart"></canvas>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center text-muted py-5">
+                            <i class="bi bi-inbox fs-1"></i>
+                            <p>Chưa có dữ liệu minh chứng.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h6 class="m-0 text-primary fw-bold">Top 5 Sinh viên tích cực nhất</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Xếp hạng</th>
+                                    <th>MSSV</th>
+                                    <th>Họ và Tên</th>
+                                    <th class="text-center">Số hoạt động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.TopSinhVien.Any())
+                                {
+                                    int rank = 1;
+                                    foreach (var sv in Model.TopSinhVien)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (rank == 1)
+                                                {
+                                                    <span class="badge bg-warning text-dark">🥇 Top 1</span>
+                                                }
+                                                else if (rank == 2)
+                                                {
+                                                    <span class="badge bg-secondary">🥈 Top 2</span>
+                                                }
+                                                else if (rank == 3)
+                                                {
+                                                    <span class="badge bg-danger">🥉 Top 3</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted fw-bold ps-2">#@rank</span>
+                                                }
+                                            </td>
+                                            <td>@sv.MSSV</td>
+                                            <td class="fw-bold text-primary">@sv.HoTen</td>
+                                            <td class="text-center"><span class="badge bg-primary rounded-pill">@sv.SoLuotThamGia</span></td>
+                                        </tr>
+                                        rank++;
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="4" class="text-center text-muted py-3">Chưa có dữ liệu</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartLabels));
+        var data = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartValues));
+
+        if(data.length > 0 && data.reduce((a, b) => a + b, 0) > 0) {
+            var ctx = document.getElementById('statusChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut', // Dùng Doughnut nhìn đẹp hơn Pie
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['#ffc107', '#198754', '#dc3545', '#6c757d'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        }
+    </script>
+}

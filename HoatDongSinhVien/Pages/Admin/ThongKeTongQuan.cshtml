@@ -1,0 +1,198 @@
+﻿@page "/admin/thong-ke-tong-quan"
+@model HoatDongSinhVien.Pages.Admin.ThongKeTongQuanModel
+@{
+    ViewData["Title"] = "Thống Kê Tổng Quan";
+}
+
+<div class="container-fluid mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold m-0"><i class="bi bi-speedometer2"></i> Thống Kê Tổng Quan</h2>
+
+        <form method="get" class="d-flex align-items-center bg-white p-2 rounded shadow-sm border">
+            <label class="me-2 fw-bold text-muted text-nowrap">Chọn học kỳ:</label>
+            <select asp-for="SelectedHocKy" asp-items="Model.HocKyList"
+                    class="form-select form-select-sm"
+                    onchange="this.form.submit()"
+                    style="min-width: 200px;">
+            </select>
+        </form>
+    </div>
+
+    @* --- PHẦN 1: CÁC THẺ THỐNG KÊ (CARDS) --- *@
+    <div class="row g-3 mb-4">
+        @* Card 1: Tổng sinh viên (Giữ nguyên) *@
+        <div class="col-md-3">
+            <div class="card text-white bg-primary shadow-sm h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-uppercase mb-0">Tổng Sinh Viên</h6>
+                        <h2 class="display-6 fw-bold my-2">@Model.TongSinhVien</h2>
+                    </div>
+                    <i class="bi bi-people-fill fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+
+        @* Card 2: Tổng Hoạt Động (Đã lọc) *@
+        <div class="col-md-3">
+            <div class="card text-white bg-success shadow-sm h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-uppercase mb-0">Hoạt Động</h6>
+                        <h2 class="display-6 fw-bold my-2">@Model.TongHoatDong</h2>
+                        <small class="opacity-75" style="font-size: 0.8rem">
+                            @(string.IsNullOrEmpty(Model.SelectedHocKy) ? "Tất cả các kỳ" : "Trong kỳ này")
+                        </small>
+                    </div>
+                    <i class="bi bi-calendar-event-fill fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+
+        @* Card 3: Chờ duyệt MC (Đã lọc) *@
+        <div class="col-md-3">
+            <div class="card text-dark bg-warning shadow-sm h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-uppercase mb-0">Chờ Duyệt MC</h6>
+                        <h2 class="display-6 fw-bold my-2">@Model.MinhChungChoDuyet</h2>
+                        <small class="opacity-75" style="font-size: 0.8rem">
+                            @(string.IsNullOrEmpty(Model.SelectedHocKy) ? "Tất cả" : "Kỳ hiện tại")
+                        </small>
+                    </div>
+                    <i class="bi bi-hourglass-split fs-1 opacity-50"></i>
+                </div>
+                <div class="card-footer bg-transparent border-0 small">
+                    <a asp-page="/GiangVien/DanhSachMinhChung" class="text-dark text-decoration-none fw-bold">
+                        Xem chi tiết <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        @* Card 4: Lượt Đăng Ký (Đã lọc) *@
+        <div class="col-md-3">
+            <div class="card text-white bg-info shadow-sm h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title text-uppercase mb-0">Lượt Đăng Ký</h6>
+                        <h2 class="display-6 fw-bold my-2">@Model.LuotDangKy</h2>
+                    </div>
+                    <i class="bi bi-pencil-square fs-1 opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* --- PHẦN 2: BIỂU ĐỒ & DANH SÁCH MỚI --- *@
+    <div class="row">
+        @* Biểu đồ *@
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white py-3">
+                    <h5 class="m-0 fw-bold text-primary">Phân bố hoạt động theo Lĩnh vực</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.TongHoatDong > 0)
+                    {
+                        <canvas id="activitiesChart"></canvas>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox fs-1"></i>
+                            <p>Không có dữ liệu cho học kỳ này.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @* Danh sách *@
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="m-0 fw-bold text-primary">Hoạt động mới nhất</h5>
+                    <a asp-page="/Student/XemDanhSachHoatDong" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Tên hoạt động</th>
+                                    <th>Ngày tổ chức</th>
+                                    <th>TT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.HoatDongMoi.Any())
+                                {
+                                    foreach (var item in Model.HoatDongMoi)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="fw-bold text-truncate" style="max-width: 150px;" title="@item.TenHoatDong">
+                                                    @item.TenHoatDong
+                                                </div>
+                                                <small class="text-muted" style="font-size: 0.75rem">@item.LinhVuc?.TenLinhVuc</small>
+                                            </td>
+                                            <td>@item.NgayToChuc.ToString("dd/MM/yy")</td>
+                                            <td>
+                                                @if (item.TrangThaiHienThi == "Hiển thị")
+                                                {
+                                                    <span class="badge bg-success" style="font-size: 0.6rem">Hiển thị</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary" style="font-size: 0.6rem">Ẩn</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="3" class="text-center text-muted py-3">Chưa có hoạt động</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Chỉ vẽ biểu đồ khi có dữ liệu
+        var labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartLabels));
+        var data = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartValues));
+
+        if (labels.length > 0) {
+            var ctx = document.getElementById('activitiesChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Số lượng hoạt động',
+                        data: data,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                }
+            });
+        }
+    </script>
+}
