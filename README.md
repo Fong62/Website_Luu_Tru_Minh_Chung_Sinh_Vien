@@ -1,7 +1,8 @@
 # Website Quản Lý Minh Chứng Sinh Viên
 
 ## 📖 Tổng quan
-**Website Quản Lý Minh Chứng Sinh Viên** là một ứng dụng web được thiết kế để hỗ trợ sinh viên trong việc lưu trữ, quản lý và phân loại các minh chứng về thành tích học tập cũng như hoạt động ngoại khóa một cách kỹ thuật số. Hệ thống giúp tối ưu hóa quy trình đánh giá của nhà trường bằng cách cung cấp một nền tảng tập trung để nộp và xác minh các bằng chứng.
+**Website Quản Lý Minh Chứng Sinh Viên** là một ứng dụng web được thiết kế để hỗ trợ sinh viên trong việc lưu trữ, quản lý và phân loại các minh chứng về thành tích học tập cũng như hoạt động ngoại khóa một cách kỹ thuật số. Hệ thống giúp tối ưu hóa quy trình đánh giá của nhà trường bằng cách cung cấp một nền tảng tập trung để nộp và xác minh các bằng chứng.<br>
+**Link website:** https://hdsv.azurewebsites.net/
 
 ## 🚀 Các tính năng chính
 * **Quản lý tập trung:** Lưu trữ và tổ chức hồ sơ sinh viên, danh mục minh chứng và lịch sử hoạt động hiệu quả.
@@ -44,6 +45,29 @@
     ```
     Truy cập `https://localhost:44369` (hoặc cổng hiển thị trên terminal) để bắt đầu sử dụng.
 
+### 4. 🔐 Hướng dẫn Đăng nhập (Tài khoản mẫu)
+
+Sau khi khởi chạy, hệ thống sẽ có sẵn các tài khoản sau để bạn kiểm thử:
+
+#### 1. 👨‍💻 Tài khoản Quản trị viên (Admin)
+* **Email:** `admin`
+* **Mật khẩu:** `admin@123`
+* **Quyền hạn:** Quản lý toàn bộ hệ thống, duyệt minh chứng, tạo hoạt động mới.
+
+#### 2. 🎓 Tài khoản Sinh viên
+* **Email:** `48.01.104.106`
+* **Mật khẩu:** `Sv@123456`
+* **Quyền hạn:** Đăng ký hoạt động, upload minh chứng, xem kết quả rèn luyện.
+
+#### 3. 🧑‍🏫 Tài khoản Giảng viên & Ban cán sự
+* **Giảng viên:**
+    * Email: `LMT`
+    * Pass: `Gv@123456`
+* **Ban cán sự:**
+    * Email: `48.01.104.059`
+    * Pass: `Sv@123456`
+* **Quyền hạn chung:** Theo dõi tiến độ của lớp và hỗ trợ quản lý minh chứng theo phân quyền.
+
 ## 📂 Cấu trúc thư mục
 ```text
 Website_Minh_Chung
@@ -62,5 +86,5 @@ Website_Minh_Chung
 ## 📞 Liên hệ
 **Nguyễn Hoàng Phong**
 * **Email:** nguyenhoangphongsupham@gmail.com
-* **LinkedIn:** [Nguyễn Hoàng Phong](https://www.linkedin.com/in/nguy%E1%BB%85n-ho%C3%A0ng-phong-a95135354/)
+* **LinkedIn:** [Nguyễn Hoàng Phong](https://www.linkedin.com/in/fong62/)
 * **GitHub:** [Fong62](https://github.com/Fong62)
