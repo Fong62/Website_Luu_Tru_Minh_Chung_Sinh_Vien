@@ -4,7 +4,7 @@
     ViewData["Title"] = "Danh sách minh chứng";
 }
 
-@* --- 1. KHU VỰC HIỂN THỊ THÔNG BÁO (Đưa hết lên đầu) --- *@
+@* --- KHU VỰC HIỂN THỊ THÔNG BÁO --- *@
 <div class="container mt-3">
     @* Thông báo thành công (Màu xanh) *@
     @if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
@@ -15,7 +15,7 @@
         </div>
     }
 
-    @* Thông báo lỗi (Màu vàng/đỏ) - QUAN TRỌNG: Code của bạn đang thiếu icon hoặc class để nổi bật *@
+    @* Thông báo lỗi (Màu vàng/đỏ) *@
     @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
     {
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -77,7 +77,9 @@
                         <td>@mc.MSSV</td>
                         <td>@(mc.SinhVien?.HoTen ?? "-")</td>
                         <td>@mc.ThoiGianDiemDanh.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td>@(mc.TrangThaiHienThi ?? "-")</td>
+                        <td class="@(mc.TrangThaiHienThi == "Từ chối" ? "text-danger fw-bold" : (mc.TrangThaiHienThi == "Đã duyệt" ? "text-success fw-bold" : ""))">
+                            @(mc.TrangThaiHienThi ?? "-")
+                        </td>
                         <td>
                             @if (!string.IsNullOrWhiteSpace(mc.AnhTheSV))
                             {
@@ -95,14 +97,19 @@
                         </td>
                         <td>@(mc.LyDoThatBai ?? "-")</td>
                         <td>
-                            <form method="post" asp-page-handler="Duyet" class="d-inline">
+                                    <form method="post" class="d-flex gap-2 justify-content-center" class="d-inline">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="mssv" value="@mc.MSSV" />
                                 <input type="hidden" name="idHoatDong" value="@mc.IDHoatDong" />
-                                <button type="submit"
-                                        class="btn btn-sm btn-success"
-                                @(mc.TrangThaiHienThi == "Đã duyệt" ? "disabled" : "")>
+                                <button type="submit" asp-page-handler="Duyet"
+                                        class="btn btn-sm btn-success" style="width: 75px;"
+                                        disabled="@(mc.TrangThaiHienThi == "Đã duyệt" ? "disabled" : null)">
                                     Duyệt
+                                </button>
+                                <button type="submit" asp-page-handler="TuChoi"
+                                        class="btn btn-sm btn-danger" style="width: 75px;"
+                                        disabled="@(mc.TrangThaiHienThi == "Từ chối" ? "disabled" : null)">
+                                    Từ chối
                                 </button>
                             </form>
                         </td>

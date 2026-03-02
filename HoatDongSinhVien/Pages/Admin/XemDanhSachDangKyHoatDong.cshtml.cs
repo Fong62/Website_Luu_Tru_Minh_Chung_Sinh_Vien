@@ -52,9 +52,9 @@ namespace HoatDongSinhVien.Pages.Admin
 
             // Lấy danh sách đăng ký cho hoạt động với IDHoatDong
             var query = _context.DangKyHoatDongs
-                .Include(d => d.SinhVien)  // Include SinhVien nếu bạn muốn hiển thị thông tin sinh viên
+                .Include(d => d.SinhVien)
                     .ThenInclude(sv => sv.Lop)
-                .Include(d => d.HoatDong)  // Include HoatDong nếu bạn muốn hiển thị thông tin hoạt động
+                .Include(d => d.HoatDong)
                 .Where(d => d.IDHoatDong == IDHoatDong);
 
             if (!string.IsNullOrEmpty(KhoaFilter))
@@ -126,7 +126,6 @@ namespace HoatDongSinhVien.Pages.Admin
                         var headerMSSV = worksheet.Cells[1, 3].Text?.Trim().ToLower();  // Đọc ô C1
 
                         // Kiểm tra xem tiêu đề có chứa từ khóa mong muốn không
-                        // Dùng .Contains để linh hoạt (ví dụ người dùng ghi "Họ tên" hay "Họ và tên" đều được)
                         bool isDungMau = true;
 
                         if (string.IsNullOrEmpty(headerHoTen) || !headerHoTen.Contains("tên")) isDungMau = false;
@@ -185,7 +184,6 @@ namespace HoatDongSinhVien.Pages.Admin
                                 IDHoatDong = IDHoatDong
                             };
 
-                            // Kiểm tra _context.DangKyHoatDongs trước khi thêm vào
                             if (_context.DangKyHoatDongs == null)
                             {
                                 throw new InvalidOperationException("DangKyHoatDongs không được khởi tạo.");

@@ -31,7 +31,7 @@ namespace HoatDongSinhVien.Pages.Student
 
             // Tìm hoạt động dựa trên ID
             HoatDong = _context.HoatDongs
-                .Include(h => h.LinhVuc)  // Include LinhVuc nếu cần hiển thị thông tin lĩnh vực
+                .Include(h => h.LinhVuc)
                 .Where(h => h.IDHoatDong == IDHoatDong)
                 .FirstOrDefault();
 

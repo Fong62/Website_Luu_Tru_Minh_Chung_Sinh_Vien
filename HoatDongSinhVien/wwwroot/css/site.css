@@ -205,15 +205,14 @@ body {
     display: flex;
     flex-direction: column;
     margin-left: 260px;
-    min-height: 100vh; /* Đảm bảo chiều cao tối thiểu bằng màn hình */
+    min-height: 100vh;
     position: relative;
 }
 
 .content-wrapper {
-    flex: 1 0 auto; /* Chiếm toàn bộ khoảng trống còn lại để đẩy footer xuống đáy */
+    flex: 1 0 auto;
     margin-top: 60px;
     padding: 20px;
-    /* QUAN TRỌNG: Thêm padding dưới để nút Quay lại/Điểm danh không bị dính vào Footer */
     padding-bottom: 80px;
     background-color: #f8f9fa;
 }
@@ -226,10 +225,9 @@ body {
     text-align: center;
     z-index: 10;
     flex-shrink: 0;
-    /* SỬA LẠI ĐOẠN NÀY */
-    width: 100%; /* Chiếm 100% của main-content (đã trừ sidebar) */
-    margin-left: 0; /* Bỏ margin 260px cũ đi vì nó đã nằm trong main-content rồi */
-    position: relative; /* Để nó trôi xuống cuối nội dung tự nhiên */
+    width: 100%;
+    margin-left: 0;
+    position: relative;
 }
 
 .footer .container {
@@ -373,7 +371,7 @@ h2 {
 }
 
 .btn-success {
-    background-color: #28a745; /* Màu xanh lá */
+    background-color: #28a745;
     border: none;
     border-radius: 8px;
     padding: 10px 20px;
@@ -382,12 +380,12 @@ h2 {
 }
 
     .btn-success:hover {
-        background-color: #218838; /* Màu xanh lá đậm khi hover */
+        background-color: #218838;
     }
 
 .float-right {
     float: right;
-    margin-top: -10px; /* Thêm một chút khoảng cách từ tiêu đề */
+    margin-top: -10px;
 }
 
 .btn-primary {
@@ -400,7 +398,7 @@ h2 {
 }
 
     .btn-primary:hover {
-        background-color: #0d145a; /* Màu xanh đậm khi hover */
+        background-color: #0d145a;
     }
 
 /* ============ PAGINATION - SIMPLE VERSION ============ */
@@ -563,21 +561,21 @@ h2 {
 
 .table {
     background-color: #ffffff;
-    border-collapse: separate; /* Để bo góc hoạt động */
+    border-collapse: separate;
     border-spacing: 0;
-    border-radius: 12px; /* Bo tròn 4 góc bảng */
-    overflow: hidden; /* Cắt nội dung thừa */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Đổ bóng nhẹ tạo độ nổi */
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     margin-bottom: 30px;
-    border: none !important; /* Bỏ viền mặc định xấu xí */
+    border: none !important;
 }
 
 /* 2. Chỉnh Header (Tiêu đề cột) sang màu xanh chủ đạo */
 .table thead th {
-    background-color: #1a237e; /* Màu xanh của bạn */
+    background-color: #1a237e;
     color: #ffffff;
     border: none !important;
-    padding: 18px 15px; /* Tăng khoảng cách cho thoáng */
+    padding: 18px 15px;
     font-weight: 600;
     text-transform: uppercase;
     font-size: 0.85rem;
@@ -588,7 +586,7 @@ h2 {
 /* 3. Chỉnh các ô dữ liệu (Body) */
 .table tbody td {
     border-top: none !important;
-    border-bottom: 1px solid #f0f2f5; /* Đường kẻ mờ, tinh tế hơn */
+    border-bottom: 1px solid #f0f2f5;
     border-left: none !important;
     border-right: none !important;
     padding: 16px 15px;
@@ -605,13 +603,12 @@ h2 {
 
 /* 5. Hiệu ứng khi di chuột vào hàng (Hover) */
 .table-hover tbody tr:hover td {
-    background-color: #f0f2ff; /* Màu xanh rất nhạt */
-    color: #1a237e; /* Chữ chuyển màu xanh đậm */
+    background-color: #f0f2ff;
+    color: #1a237e;
     font-weight: 500;
     }
 
-/* 6. Xử lý class .table-bordered có sẵn trong HTML 
-(Biến nó thành trong suốt để không bị kẻ ô vuông xấu) */
+/* 6. Xử lý class .table-bordered có sẵn trong HTML  */
 .table-bordered {
     border: none !important;
 }
@@ -619,7 +616,7 @@ h2 {
 .table-bordered th,
 .table-bordered td {
     border: none !important;
-    border-bottom: 1px solid #f0f2f5 !important; /* Chỉ giữ dòng kẻ ngang */
+    border-bottom: 1px solid #f0f2f5 !important;
 }
 
 /* 7. Tô đậm cột điểm hoặc số liệu (nếu là cột cuối cùng hoặc cột số) */

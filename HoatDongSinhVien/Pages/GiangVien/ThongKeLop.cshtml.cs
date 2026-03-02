@@ -33,7 +33,7 @@ namespace HoatDongSinhVien.Pages.GiangVien
 
         // --- SỐ LIỆU THỐNG KÊ ---
         public int TongSinhVien { get; set; }
-        public int SinhVienThamGia { get; set; } // Số SV có ít nhất 1 hoạt động
+        public int SinhVienThamGia { get; set; }
         public int TongMinhChungChoDuyet { get; set; }
         public int TongLuotDangKy { get; set; }
 
@@ -44,16 +44,13 @@ namespace HoatDongSinhVien.Pages.GiangVien
 
         public async Task OnGetAsync()
         {
-            // 1. Lấy ID Giảng viên (Giả sử Username là Mã GV)
             var idGiangVien = User.Identity.Name;
 
-            // 2. Load Dropdown Học Kỳ
             HocKys = await _context.HocKys
                 .OrderBy(h => h.IDHocKy)
                 .Select(h => new SelectListItem { Value = h.IDHocKy, Text = h.TenHocKy })
                 .ToListAsync();
 
-            // 3. Load Dropdown Lớp (CHỈ LẤY LỚP CỦA GV NÀY)
             var queryLop = _context.Lops.Where(l => l.IDGiangVien == idGiangVien);
 
             LopHocs = await queryLop
@@ -62,9 +59,7 @@ namespace HoatDongSinhVien.Pages.GiangVien
 
             LopHocs.Insert(0, new SelectListItem { Value = "", Text = "-- Tất cả lớp quản lý --" });
 
-            // 4. BẮT ĐẦU LỌC DỮ LIỆU
-
-            // a. Lọc Sinh viên thuộc phạm vi quản lý
+            // Lọc Sinh viên thuộc phạm vi quản lý
             var querySV = _context.SinhViens.AsQueryable();
 
             if (!string.IsNullOrEmpty(IDLop))
@@ -73,7 +68,6 @@ namespace HoatDongSinhVien.Pages.GiangVien
             }
             else
             {
-                // Nếu chọn "Tất cả", lấy tất cả SV thuộc các lớp do GV này quản lý
                 var danhSachLopCuaGV = await queryLop.Select(l => l.IDLop).ToListAsync();
                 querySV = querySV.Where(sv => danhSachLopCuaGV.Contains(sv.IDLop));
             }
@@ -82,7 +76,7 @@ namespace HoatDongSinhVien.Pages.GiangVien
             var listMSSV = await querySV.Select(s => s.MSSV).ToListAsync();
             TongSinhVien = listMSSV.Count;
 
-            // b. Truy vấn Hoạt động & Minh chứng theo Học kỳ
+            // Truy vấn Hoạt động & Minh chứng theo Học kỳ
             var queryDangKy = _context.DangKyHoatDongs
                 .Include(dk => dk.HoatDong)
                 .Where(dk => listMSSV.Contains(dk.MSSV));

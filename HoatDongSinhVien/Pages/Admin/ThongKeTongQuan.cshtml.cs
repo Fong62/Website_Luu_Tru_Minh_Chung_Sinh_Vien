@@ -41,7 +41,7 @@ namespace HoatDongSinhVien.Pages.Admin
         {
             // 1. Load danh sách học kỳ vào Dropdown
             HocKyList = await _context.HocKys
-                .OrderBy(h => h.IDHocKy) // Mới nhất lên đầu
+                .OrderBy(h => h.IDHocKy)
                 .Select(h => new SelectListItem
                 {
                     Value = h.IDHocKy,
@@ -53,7 +53,6 @@ namespace HoatDongSinhVien.Pages.Admin
             HocKyList.Insert(0, new SelectListItem { Value = "", Text = "-- Tất cả các kỳ --" });
 
             // 2. Khởi tạo Query cơ bản cho Hoạt động
-            // Nếu có chọn học kỳ -> Lọc. Nếu không -> Lấy hết.
             var queryHoatDong = _context.HoatDongs.AsQueryable();
 
             if (!string.IsNullOrEmpty(SelectedHocKy))
@@ -63,13 +62,13 @@ namespace HoatDongSinhVien.Pages.Admin
 
             // --- TÍNH TOÁN SỐ LIỆU ---
 
-            // a. Tổng sinh viên (Thường là số cố định toàn trường, không theo kỳ)
+            // Tổng sinh viên
             TongSinhVien = await _context.SinhViens.CountAsync();
 
-            // b. Tổng hoạt động (Theo kỳ đã chọn)
+            // Tổng hoạt động (Theo kỳ đã chọn)
             TongHoatDong = await queryHoatDong.CountAsync();
 
-            // c. Minh chứng chờ duyệt (Phải join sang bảng Hoạt động để lọc theo kỳ)
+            // Minh chứng chờ duyệt
             var queryMinhChung = _context.MinhChungs.Include(mc => mc.HoatDong).AsQueryable();
             if (!string.IsNullOrEmpty(SelectedHocKy))
             {
@@ -79,7 +78,7 @@ namespace HoatDongSinhVien.Pages.Admin
                 .Where(mc => mc.TrangThaiHienThi == "Chờ duyệt" || mc.TrangThaiHienThi == null)
                 .CountAsync();
 
-            // d. Lượt đăng ký (Cũng phải join sang bảng Hoạt động)
+            // Lượt đăng ký
             var queryDangKy = _context.DangKyHoatDongs.Include(dk => dk.HoatDong).AsQueryable();
             if (!string.IsNullOrEmpty(SelectedHocKy))
             {
@@ -87,7 +86,7 @@ namespace HoatDongSinhVien.Pages.Admin
             }
             LuotDangKy = await queryDangKy.CountAsync();
 
-            // 3. Dữ liệu biểu đồ (Dựa trên queryHoatDong đã lọc ở trên)
+            // 3. Dữ liệu biểu đồ
             var chartData = await queryHoatDong
                 .Include(h => h.LinhVuc)
                 .GroupBy(h => h.LinhVuc.TenLinhVuc)
@@ -101,7 +100,7 @@ namespace HoatDongSinhVien.Pages.Admin
             ChartLabels = chartData.Select(x => x.LinhVuc).ToList();
             ChartValues = chartData.Select(x => x.SoLuong).ToList();
 
-            // 4. Lấy 5 hoạt động mới nhất (cũng theo kỳ đã chọn)
+            // 4. Lấy 5 hoạt động mới nhất
             HoatDongMoi = await queryHoatDong
                 .Include(h => h.LinhVuc)
                 .OrderByDescending(h => h.NgayToChuc)

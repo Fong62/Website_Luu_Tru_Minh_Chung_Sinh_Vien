@@ -15,7 +15,7 @@ namespace HoatDongSinhVien.Models
         [StringLength(100)]
         public string TenLinhVuc { get; set; }
 
-        public double ThangDiem { get; set; } // Kiểu float trong DB map sang double/float
+        public double ThangDiem { get; set; } 
 
         public virtual ICollection<HoatDong> HoatDongs { get; set; }
     }

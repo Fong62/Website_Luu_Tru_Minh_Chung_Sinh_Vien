@@ -162,7 +162,7 @@
         if(data.length > 0 && data.reduce((a, b) => a + b, 0) > 0) {
             var ctx = document.getElementById('statusChart').getContext('2d');
             new Chart(ctx, {
-                type: 'doughnut', // Dùng Doughnut nhìn đẹp hơn Pie
+                type: 'doughnut',
                 data: {
                     labels: labels,
                     datasets: [{

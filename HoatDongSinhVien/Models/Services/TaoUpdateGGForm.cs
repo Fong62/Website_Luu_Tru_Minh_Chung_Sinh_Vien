@@ -18,16 +18,13 @@ namespace HoatDongSinhVien.Models.Services
         {
             try
             {
-                // Gửi yêu cầu GET tới Google Apps Script để tạo form và nhận URL chỉnh sửa
                 var response = await _httpClient.GetStringAsync($"{googleScriptUrlPhong}?action=create&activityName={activityName}&moTa={moTa}");
 
-                // Trả về URL chỉnh sửa của Google Form (đảm bảo response hợp lệ)
                 Console.WriteLine("Apps Script response: " + response);
                 return response;
             }
             catch (Exception ex)
             {
-                // Log lỗi nếu có
                 Console.WriteLine("Lỗi khi gọi Google Apps Script: " + ex.Message);
                 return "Có lỗi xảy ra khi tạo Google Form.";
             }

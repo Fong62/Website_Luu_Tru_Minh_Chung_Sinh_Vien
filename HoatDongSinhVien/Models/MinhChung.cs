@@ -17,15 +17,15 @@ namespace HoatDongSinhVien.Models
         public string IDHoatDong { get; set; } // Mã hoạt động (Khóa ngoại từ bảng HoatDong)
 
         [StringLength(256)]
-        public string AnhTheSV { get; set; } // Ảnh thẻ sinh viên (có thể là đường dẫn hoặc dữ liệu binary)
+        public string AnhTheSV { get; set; }
 
-        public DateTime ThoiGianDiemDanh { get; set; } // Thời gian điểm danh
+        public DateTime ThoiGianDiemDanh { get; set; }
 
         [StringLength(20)]
-        public string TrangThaiHienThi { get; set; } // Trạng thái hiển thị
+        public string TrangThaiHienThi { get; set; }
 
         [StringLength(256)]
-        public string LyDoThatBai { get; set; } // Lý do thất bại
+        public string LyDoThatBai { get; set; }
 
         public virtual SinhVien SinhVien { get; set; } // Liên kết với bảng SinhVien
         public virtual HoatDong HoatDong { get; set; } // Liên kết với bảng HoatDong

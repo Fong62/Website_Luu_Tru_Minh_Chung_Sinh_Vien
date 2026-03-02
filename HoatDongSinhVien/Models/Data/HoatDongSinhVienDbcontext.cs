@@ -94,14 +94,14 @@ namespace HoatDongSinhVien.Models.Data
                 .HasForeignKey(hd => hd.IDHocKy)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // --- MỚI THÊM: Quan hệ SinhVien - KetQuaRenLuyen (1-n) ---
+            // --- Quan hệ SinhVien - KetQuaRenLuyen (1-n) ---
             modelBuilder.Entity<SinhVien>()
                 .HasMany(sv => sv.KetQuaRenLuyens)
                 .WithOne(kq => kq.SinhVien)
                 .HasForeignKey(kq => kq.MSSV)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // --- MỚI THÊM: Quan hệ HocKy - KetQuaRenLuyen (1-n) ---
+            // --- Quan hệ HocKy - KetQuaRenLuyen (1-n) ---
             modelBuilder.Entity<HocKy>()
                 .HasMany(hk => hk.KetQuaRenLuyens)
                 .WithOne(kq => kq.HocKy)

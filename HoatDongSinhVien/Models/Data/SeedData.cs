@@ -173,6 +173,7 @@ namespace HoatDongSinhVien.Data
             await context.SaveChangesAsync();
         }
 
+        // ================= LĨNH VỰC =================
         private static async Task SeedLinhVuc(HoatDongSinhVienDbcontext context)
         {
             var linhVucList = new List<LinhVuc>
@@ -214,12 +215,11 @@ namespace HoatDongSinhVien.Data
             await context.SaveChangesAsync();
         }
 
+        // ================= HỌC KỲ =================
         private static async Task SeedHocKy(HoatDongSinhVienDbcontext context)
         {
             var hocKyList = new List<HocKy>();
 
-            // Chạy loop từ năm 2025 đến năm 2030
-            // Năm 2030 sẽ sinh ra kỳ học cho năm 2030-2031
             for (int year = 2025; year <= 2030; year++)
             {
                 string namHoc = $"{year}-{year + 1}";
@@ -243,7 +243,6 @@ namespace HoatDongSinhVien.Data
 
             foreach (var hk in hocKyList)
             {
-                // Kiểm tra xem IDHocKy đã tồn tại chưa trước khi thêm
                 if (!await context.HocKys.AnyAsync(h => h.IDHocKy == hk.IDHocKy))
                 {
                     context.HocKys.Add(hk);

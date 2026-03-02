@@ -31,15 +31,14 @@ namespace HoatDongSinhVien.Pages.Student
 
         public async Task OnGetAsync()
         {
-            // Load danh sách học kỳ
             HocKyList = await _context.HocKys
                 .Select(h => new SelectListItem { Value = h.IDHocKy, Text = h.TenHocKy })
                 .ToListAsync();
 
             if (!string.IsNullOrEmpty(SelectedHocKy))
             {
-                // Lấy tất cả hoạt động sinh viên đã đăng ký và đang hiển thị
-                string mssv = User.Identity.Name; // TODO: lấy từ session/Identity
+                // Lấy tất cả hoạt động sinh viên đã đăng ký
+                string mssv = User.Identity.Name;
                 MinhChungList = await _context.MinhChungs
                     .Include(mc => mc.HoatDong)
                         .ThenInclude(h => h.LinhVuc)
@@ -48,8 +47,7 @@ namespace HoatDongSinhVien.Pages.Student
                               && mc.TrangThaiHienThi == "Đã duyệt")
                     .ToListAsync();
 
-                // --- PHẦN 2: LẤY TỔNG ĐIỂM RÈN LUYỆN ---
-                // Lấy trực tiếp từ bảng KetQuaRenLuyen theo MSSV và Học Kỳ
+                // --- LẤY TỔNG ĐIỂM RÈN LUYỆN ---
                 KetQuaTongKet = await _context.KetQuaRenLuyens
                     .FirstOrDefaultAsync(kq => kq.MSSV == mssv && kq.IDHocKy == SelectedHocKy);
             }

@@ -130,7 +130,7 @@
     // Cập nhật Logic lấy dữ liệu Chart từ MinhChungList
     var chartData = Model.MinhChungList
         .Where(mc => mc.HoatDong.LinhVuc != null)
-        .GroupBy(mc => mc.HoatDong.LinhVuc.TenLinhVuc) // Group theo Tên hiển thị cho đẹp
+        .GroupBy(mc => mc.HoatDong.LinhVuc.TenLinhVuc)
         .Select(g => new
         {
             LinhVuc = g.Key,
@@ -143,14 +143,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // Hàm mở Modal ảnh (Mới)
         function showImage(url) {
             var modal = new bootstrap.Modal(document.getElementById('imageModal'));
             document.getElementById('previewImage').src = url;
             modal.show();
         }
 
-        // Code Chart cũ giữ nguyên (chỉ thay đổi nguồn data truyền vào)
         var labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
                 chartData.Select(x => x.LinhVuc)
         ));

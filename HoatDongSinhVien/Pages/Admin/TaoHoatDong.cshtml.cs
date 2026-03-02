@@ -68,15 +68,15 @@ namespace HoatDongSinhVien.Pages.Admin
 
             string googleFormUrl = await _taoUpdateGGForm.CreateGoogleFormAsync(HoatDong.TenHoatDong, HoatDong.MoTa);
 
-            if (googleFormUrl.Contains("Có lỗi xảy ra")) // Kiểm tra xem có phải lỗi không
+            if (googleFormUrl.Contains("Có lỗi xảy ra"))
             {
-                ModelState.AddModelError("", googleFormUrl);  // Thông báo lỗi nếu có
+                ModelState.AddModelError("", googleFormUrl);
                 return Page();
             }
 
             // Tạo mã QR cho đăng ký và điểm danh
             var qrDangKyUrl = GenerateQRCodeDangKy(googleFormUrl);
-            var qrDiemDanhUrl = GenerateQRCodeDiemDanh($"https://attendance.com/{HoatDong.IDHoatDong}");
+            var qrDiemDanhUrl = GenerateQRCodeDiemDanh($"https://hdsv.azurewebsites.net/student/diem-danh-hoat-dong/{HoatDong.IDHoatDong}");
 
             HoatDong.QRCodeDangKy = qrDangKyUrl;
             HoatDong.QRCodeDiemDanh = qrDiemDanhUrl;

@@ -132,9 +132,8 @@ namespace HoatDongSinhVien.Pages.GiangVien
             }
 
             var thangDiem = hoatDong.LinhVuc?.ThangDiem ?? 0;
-            var diemCong = Convert.ToDecimal(thangDiem); // double -> decimal
+            var diemCong = Convert.ToDecimal(thangDiem);
 
-            // Join vào KQRL theo (MSSV, IDHocKy)
             var kq = await _context.KetQuaRenLuyens
                 .FirstOrDefaultAsync(x => x.MSSV == mssv && x.IDHocKy == hoatDong.IDHocKy);
 
@@ -145,7 +144,7 @@ namespace HoatDongSinhVien.Pages.GiangVien
                     MSSV = mssv,
                     IDHocKy = hoatDong.IDHocKy,
                     DiemRenLuyen = diemCong,
-                    ThanhTich = "" // bạn có thể gán null nếu cho phép
+                    ThanhTich = ""
                 };
                 _context.KetQuaRenLuyens.Add(kq);
             }
@@ -161,7 +160,59 @@ namespace HoatDongSinhVien.Pages.GiangVien
 
             SuccessMessage = "Duyệt minh chứng thành công";
 
-            // quay lại trang với filter đang chọn
+            return RedirectToPage("/GiangVien/DanhSachMinhChung", new { IDHoatDong = idHoatDong });
+        }
+
+        public async Task<IActionResult> OnPostTuChoiAsync(string mssv, string idHoatDong)
+        {
+            if (string.IsNullOrWhiteSpace(mssv) || string.IsNullOrWhiteSpace(idHoatDong))
+            {
+                ErrorMessage = "Thiếu dữ liệu MSSV hoặc ID hoạt động.";
+                return await ReloadAndReturnPage(idHoatDong);
+            }
+
+            // Lấy minh chứng
+            var minhChung = await _context.MinhChungs
+                .FirstOrDefaultAsync(x => x.MSSV == mssv && x.IDHoatDong == idHoatDong);
+
+            if (minhChung == null)
+            {
+                ErrorMessage = "Không tìm thấy minh chứng.";
+                return await ReloadAndReturnPage(idHoatDong);
+            }
+            if (minhChung.TrangThaiHienThi == "Đã duyệt")
+            {
+                var hoatDong = await _context.HoatDongs
+                    .Include(x => x.LinhVuc)
+                    .FirstOrDefaultAsync(x => x.IDHoatDong == idHoatDong);
+
+                if (hoatDong != null && !string.IsNullOrWhiteSpace(hoatDong.IDHocKy))
+                {
+                    var thangDiem = hoatDong.LinhVuc?.ThangDiem ?? 0;
+                    var diemTru = Convert.ToDecimal(thangDiem);
+
+                    // Tìm kết quả rèn luyện của sinh viên trong học kỳ đó
+                    var kq = await _context.KetQuaRenLuyens
+                        .FirstOrDefaultAsync(x => x.MSSV == mssv && x.IDHocKy == hoatDong.IDHocKy);
+
+                    if (kq != null)
+                    {
+                        kq.DiemRenLuyen -= diemTru;
+                        // Đảm bảo điểm không bị rớt xuống mức âm
+                        if (kq.DiemRenLuyen < 0)
+                        {
+                            kq.DiemRenLuyen = 0;
+                        }
+                    }
+                }
+            }
+            // Cập nhật minh chứng thành Từ chối
+            minhChung.TrangThaiHienThi = "Từ chối";
+
+            await _context.SaveChangesAsync();
+
+            SuccessMessage = "Từ chối minh chứng thành công.";
+
             return RedirectToPage("/GiangVien/DanhSachMinhChung", new { IDHoatDong = idHoatDong });
         }
 
@@ -176,7 +227,7 @@ namespace HoatDongSinhVien.Pages.GiangVien
             var currentHoatDong = await _context.HoatDongs.FindAsync(idHoatDong);
             if (currentHoatDong != null)
             {
-                IDHocKy = currentHoatDong.IDHocKy; // Gán lại IDHocKy để View hiển thị đúng
+                IDHocKy = currentHoatDong.IDHocKy;
                 HoatDongs = await _context.HoatDongs
                     .Where(hd => hd.IDHocKy == IDHocKy)
                     .OrderByDescending(hd => hd.NgayToChuc)
