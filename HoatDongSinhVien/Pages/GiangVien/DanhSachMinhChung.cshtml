@@ -58,65 +58,75 @@
     }
     else
     {
-        <table class="table table-bordered table-hover align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>MSSV</th>
-                    <th>Họ tên</th>
-                    <th>Thời gian điểm danh</th>
-                    <th>Trạng thái</th>
-                    <th>Hình ảnh</th>
-                    <th>Lý do thất bại</th>
-                    <th>Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var mc in Model.MinhChungs)
-                {
-                    <tr>
-                        <td>@mc.MSSV</td>
-                        <td>@(mc.SinhVien?.HoTen ?? "-")</td>
-                        <td>@mc.ThoiGianDiemDanh.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td class="@(mc.TrangThaiHienThi == "Từ chối" ? "text-danger fw-bold" : (mc.TrangThaiHienThi == "Đã duyệt" ? "text-success fw-bold" : ""))">
-                            @(mc.TrangThaiHienThi ?? "-")
-                        </td>
-                        <td>
-                            @if (!string.IsNullOrWhiteSpace(mc.AnhTheSV))
-                            {
-                                <a href="@mc.AnhTheSV"
-                                   data-lightbox="minhchung-@Model.IDHoatDong"
-                                   data-title="MSSV: @mc.MSSV"
-                                   class="btn btn-sm btn-outline-primary">
-                                    Xem chi tiết
-                                </a>
-                            }
-                            else
-                            {
-                                <span>-</span>
-                            }
-                        </td>
-                        <td>@(mc.LyDoThatBai ?? "-")</td>
-                        <td>
-                                    <form method="post" class="d-flex gap-2 justify-content-center" class="d-inline">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="mssv" value="@mc.MSSV" />
-                                <input type="hidden" name="idHoatDong" value="@mc.IDHoatDong" />
-                                <button type="submit" asp-page-handler="Duyet"
-                                        class="btn btn-sm btn-success" style="width: 75px;"
-                                        disabled="@(mc.TrangThaiHienThi == "Đã duyệt" ? "disabled" : null)">
-                                    Duyệt
-                                </button>
-                                <button type="submit" asp-page-handler="TuChoi"
-                                        class="btn btn-sm btn-danger" style="width: 75px;"
-                                        disabled="@(mc.TrangThaiHienThi == "Từ chối" ? "disabled" : null)">
-                                    Từ chối
-                                </button>
-                            </form>
-                        </td>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
+                    <tr class="text-nowrap text-center">
+                        <th>MSSV</th>
+                        <th>Họ tên</th>
+                        <th>Thời gian điểm danh</th>
+                        <th>Trạng thái</th>
+                        <th>Hình ảnh</th>
+                        <th style="min-width: 150px;">Lý do thất bại</th>
+                        <th>Thao tác</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var mc in Model.MinhChungs)
+                    {
+                        <tr>
+                            <td class="text-nowrap text-center fw-bold">@mc.MSSV</td>
+
+                            <td style="min-width: 150px;">@(mc.SinhVien?.HoTen ?? "-")</td>
+
+                            <td class="text-nowrap text-center">@mc.ThoiGianDiemDanh.ToString("dd/MM/yyyy HH:mm")</td>
+
+                            <td class="text-nowrap text-center @(mc.TrangThaiHienThi == "Từ chối" ? "text-danger fw-bold" : (mc.TrangThaiHienThi == "Đã duyệt" ? "text-success fw-bold" : ""))">
+                                @(mc.TrangThaiHienThi ?? "-")
+                            </td>
+
+                            <td class="text-center">
+                                @if (!string.IsNullOrWhiteSpace(mc.AnhTheSV))
+                                {
+                                    <a href="@mc.AnhTheSV"
+                                       data-lightbox="minhchung-@Model.IDHoatDong"
+                                       data-title="MSSV: @mc.MSSV"
+                                       class="btn btn-sm btn-outline-primary text-nowrap">
+                                        Xem ảnh
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+
+                            <td class="text-muted small">@(mc.LyDoThatBai ?? "-")</td>
+
+                            <td class="text-nowrap">
+                                <form method="post" class="d-flex gap-2 justify-content-center m-0">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="mssv" value="@mc.MSSV" />
+                                    <input type="hidden" name="idHoatDong" value="@mc.IDHoatDong" />
+
+                                    <button type="submit" asp-page-handler="Duyet"
+                                            class="btn btn-sm btn-success" style="width: 75px;"
+                                            disabled="@(mc.TrangThaiHienThi == "Đã duyệt" ? "disabled" : null)">
+                                        Duyệt
+                                    </button>
+
+                                    <button type="submit" asp-page-handler="TuChoi"
+                                            class="btn btn-sm btn-danger" style="width: 75px;"
+                                            disabled="@(mc.TrangThaiHienThi == "Từ chối" ? "disabled" : null)">
+                                        Từ chối
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     }
 </div>
  <div class="container-fluid mt-4 pagination-container">

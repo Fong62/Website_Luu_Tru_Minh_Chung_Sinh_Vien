@@ -12,9 +12,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<HoatDongSinhVienDbcontext>(opts =>
 {
-    opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultString"));
+    opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultString"),
+        sqlServerOptionsAction: sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(30),
+                errorNumbersToAdd: null);
+        });
 });
-
 ExcelPackage.License.SetNonCommercialPersonal("Student Project");
 
 //DI
@@ -69,10 +75,16 @@ app.MapRazorPages();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-
-    await SeedData.InitializeAsync(services);
-    await SeedUser.InitializeAsync(services);
-
+    try
+    {
+        await SeedData.InitializeAsync(services);
+        await SeedUser.InitializeAsync(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "[CẢNH BÁO] Lỗi khi Seed Data. Nguyên nhân có thể do Azure SQL Free chưa thức dậy kịp.");
+    }
 }
 
 app.Run();

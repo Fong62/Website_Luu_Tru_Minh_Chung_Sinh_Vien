@@ -34,7 +34,7 @@
     .qr-container {
         background-color: #f8f9fa;
         border-radius: 10px;
-        padding: 15px;
+        padding: 10px;
         text-align: center;
         border: 1px dashed #dee2e6;
         transition: transform 0.2s;
@@ -48,7 +48,8 @@
 
     .qr-img {
         width: 140px;
-        height: 140px;
+        height: auto;
+        max-height: 140px;
         object-fit: contain;
         margin-bottom: 10px;
     }
@@ -108,9 +109,9 @@
 
                 <div class="col-lg-4">
                     <div class="row g-3">
-                        <div class="col-6 col-lg-12">
+                        <div class="col-12 col-lg-12">
                             <div class="qr-container">
-                                <h6 class="fw-bold text-primary mb-2">QR Đăng Ký</h6>
+                                <h6 class="fw-bold text-primary mb-2 text-nowrap">QR Đăng Ký</h6>
                                 @if (!string.IsNullOrEmpty(Model.QRCodeDangKyUrl))
                                 {
                                     <img src="@Model.QRCodeDangKyUrl" alt="QR Đăng Ký" class="img-fluid qr-img" />
@@ -122,9 +123,9 @@
                                 }
                             </div>
                         </div>
-                        <div class="col-6 col-lg-12">
+                        <div class="col-12 col-lg-12">
                             <div class="qr-container">
-                                <h6 class="fw-bold text-success mb-2">QR Điểm Danh</h6>
+                                <h6 class="fw-bold text-success mb-2 text-nowrap">QR Điểm Danh</h6>
                                 @if (!string.IsNullOrEmpty(Model.QRCodeDiemDanhUrl))
                                 {
                                     <img src="@Model.QRCodeDiemDanhUrl" alt="QR Điểm Danh" class="img-fluid qr-img" />

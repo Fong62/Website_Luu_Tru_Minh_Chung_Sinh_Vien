@@ -2,89 +2,113 @@
 @model HoatDongSinhVien.Pages.Admin.XemDanhSachDangKyHoatDongModel
 
 @{
-    ViewData["Title"] = "Danh Sách Đăng Ký Hoạt Động";
+    ViewData["Title"] = "Danh Sách Đăng Ký";
 }
 
-<h2>Danh sách đăng ký tham gia hoạt động: @Model.TenHoatDong</h2>
+<div class="container-fluid mt-3 px-0 px-md-3">
+    <h2 class="text-primary fw-bold mt-3 mb-4">Danh sách đăng ký tham gia hoạt động: <br class="d-md-none" /> <span class="text-dark">@Model.TenHoatDong</span></h2>
 
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["Message"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (!ModelState.IsValid)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <strong><i class="bi bi-exclamation-triangle-fill me-2"></i> Đã có lỗi xảy ra:</strong>
+            <div asp-validation-summary="All" class="text-danger mb-0 small"></div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body bg-light">
+            <div class="row g-3">
+                <div class="col-12 col-lg-7 border-end-md">
+                    <form method="post" enctype="multipart/form-data" class="row g-2 align-items-end">
+                        <div class="col-12 col-sm-8">
+                            <label for="fileUpload" class="form-label fw-bold text-muted small text-uppercase">Chọn file Excel để import</label>
+                            <input type="file" name="fileUpload" id="fileUpload" class="form-control" />
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <input type="hidden" name="IDHoatDong" value="@Model.IDHoatDong" />
+                            <button type="submit" class="btn btn-success w-100" asp-page-handler="ImportExcel">
+                                <i class="bi bi-file-earmark-excel"></i> Import Excel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-12 col-lg-5">
+                    <form method="get" class="row g-2 align-items-end">
+                        <div class="col-12 col-sm-8">
+                            <label class="form-label fw-bold text-muted small text-uppercase">Bộ lọc theo Khoa</label>
+                            <select class="form-select" name="KhoaFilter">
+                                <option value="">Tất cả các Khoa</option>
+                                @foreach (var khoa in Model.Faculties)
+                                {
+                                    var slug = khoa.Replace(" ", "-");
+                                    <option value="@slug" selected="@(Model.KhoaFilter == slug)">@khoa</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-funnel"></i> Lọc
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-}
-@if (!ModelState.IsValid)
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Đã có lỗi xảy ra:</strong>
-        <div asp-validation-summary="All" class="text-danger mb-0"></div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
 
-<!-- Nút Import Excel -->
-<form method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label for="fileUpload">Chọn file Excel để import</label>
-        <input type="file" name="fileUpload" id="fileUpload" class="form-control" />
-    </div>
-
-    <input type="hidden" name="IDHoatDong" value="@Model.IDHoatDong" />
-    <button type="submit" class="btn btn-success float-right" asp-page-handler="ImportExcel">Import Excel</button>
-</form>
-
-<!-- Bộ lọc Khoa -->
-<form method="get">
-    <select class="form-control" name="KhoaFilter">
-        <option value="">Chọn Khoa</option>
-        @foreach (var khoa in Model.Faculties)
-        {
-            var slug = khoa.Replace(" ", "-");
-            <option value="@slug" selected="@(Model.KhoaFilter == slug)">
-                @khoa
-            </option>
-        }
-    </select>
-
-    <button type="submit" class="btn btn-primary">Lọc</button>
-</form>
-
-
-<!-- Danh sách đăng ký -->
-@if (Model.DangKyHoatDongs != null && Model.DangKyHoatDongs.Any())
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Mã Sinh Viên</th>
-                <th>Tên Sinh Viên</th>
-                <th>Lớp</th>
-                <th>Tên Khoa</th>
-                <th>Thời Gian Đăng Ký</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.DangKyHoatDongs)
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            @if (Model.DangKyHoatDongs != null && Model.DangKyHoatDongs.Any())
             {
-                <tr>
-                    <td>@item.MSSV</td>
-                    <td>@item.HoTen</td>
-                    <td>@item.SinhVien.IDLop - @item.SinhVien.Lop.TenLop</td>
-                    <td>@item.TenKhoa</td>
-                    <td>@item.ThoiGianDangKy.ToString("dd/MM/yyyy HH:mm")</td>
-                </tr>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 text-nowrap">
+                        <thead class="table-primary border-bottom">
+                            <tr>
+                                <th>Mã Sinh Viên</th>
+                                <th style="min-width: 180px;">Tên Sinh Viên</th>
+                                <th>Lớp</th>
+                                <th>Tên Khoa</th>
+                                <th class="text-center">Thời Gian Đăng Ký</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.DangKyHoatDongs)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">@item.MSSV</td>
+                                    <td class="fw-bold text-dark">@item.HoTen</td>
+                                    <td class="text-muted small">@item.SinhVien.IDLop - @item.SinhVien.Lop.TenLop</td>
+                                    <td><span class="badge bg-light text-dark border">@item.TenKhoa</span></td>
+                                    <td class="text-center text-muted">@item.ThoiGianDangKy.ToString("dd/MM/yyyy HH:mm")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>Không có dữ liệu đăng ký.</p>
-}
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox fs-1 text-muted"></i>
+                    <p class="mt-2">Không có dữ liệu đăng ký cho hoạt động này.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
 
-<!-- Thêm container cho phân trang -->
-<div class="container-fluid mt-4 pagination-container">
+<div class="container-fluid mt-4 pagination-container pb-5">
     <div page-model="@Model.PagingInfo"
          page-name="/Admin/XemDanhSachDangKyHoatDong"
          page-classes-enabled="true"

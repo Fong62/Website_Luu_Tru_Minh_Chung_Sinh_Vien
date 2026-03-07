@@ -27,14 +27,7 @@
     </style>
 </head>
 <body>
-    <!-- Overlay cho mobile sidebar -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- Nút toggle sidebar cho mobile -->
-    <button class="sidebar-toggle" id="sidebarToggle">
-        <i class="bi bi-list"></i>
-    </button>
-
     <div class="wrapper">
         @if (signInManager.IsSignedIn(User))
         {
@@ -51,11 +44,17 @@
 
         <div class="main-content">
             <header class="header bg-primary text-white">
-                <div class="d-flex justify-content-start align-items-center">
+                <div class="d-flex justify-content-start align-items-center w-100">
+                    <button class="sidebar-toggle" id="sidebarToggle">
+                        <i class="bi bi-list"></i>
+                    </button>
                     <!-- Logo Trường -->
                     <img src="~/img/Logo.png" alt="HCMUE Logo" class="header-logo">
                     <!-- Tên trường -->
-                    <h2 class="fw-bold mb-0">Trường Đại học Sư phạm TP. Hồ Chí Minh</h2>
+                    <h2 class="fw-bold mb-0 fs-5 d-none d-md-block">Trường Đại học Sư phạm TP. Hồ Chí Minh</h2>
+
+                    <h2 class="fw-bold mb-0 fs-5 d-md-none">ĐH Sư phạm TP.HCM</h2>
+
                 </div>
             </header>
 
@@ -67,7 +66,7 @@
 
             <footer class="footer border-top text-muted">
                 <div class="container">
-                    &copy; 2026 - HoatDongSinhVien - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    &copy; 2026 - HoatDongSinhVien</a>
                 </div>
             </footer>
         </div>
@@ -109,11 +108,20 @@
             const sidebarOverlay = document.getElementById('sidebarOverlay');
             const sidebar = document.querySelector('.sidebar');
 
+
             if (sidebarToggle && sidebar) {
                 sidebarToggle.addEventListener('click', function() {
                     sidebar.classList.toggle('active');
                     sidebarOverlay.classList.toggle('active');
                 });
+
+                const sidebarClose = document.getElementById('sidebarClose');
+                if (sidebarClose) {
+                    sidebarClose.addEventListener('click', function() {
+                        sidebar.classList.remove('active');
+                        sidebarOverlay.classList.remove('active');
+                    });
+                }
 
                 sidebarOverlay.addEventListener('click', function() {
                     sidebar.classList.remove('active');

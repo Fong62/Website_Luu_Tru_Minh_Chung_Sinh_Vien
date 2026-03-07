@@ -3,7 +3,9 @@
         <img src="~/img/Logo.png" alt="HCMUE Logo" class="sidebar-logo">
         <h3 class="sidebar-title">HCMUE</h3>
         <p class="sidebar-subtitle">Hệ thống thông tin</p>
-
+        <button class="btn-close-sidebar d-md-none" id="sidebarClose" aria-label="Close">
+            <i class="bi bi-x-lg"></i>
+        </button>
     </div>
     @if (signInManager.IsSignedIn(User))
     {
