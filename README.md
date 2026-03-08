@@ -33,7 +33,7 @@
     ```
 
 2.  **Cấu hình Cơ sở dữ liệu**
-    * Mở tệp `appsettings.json`, tìm và cập nhật chuỗi kết nối `DefaultConnection` phù hợp với máy.
+    * Mở tệp `appsettings.json`, tìm và cập nhật chuỗi kết nối `DefaultString` phù hợp với máy.
     * Chạy lệnh sau để tạo database:
         ```bash
         dotnet ef database update
