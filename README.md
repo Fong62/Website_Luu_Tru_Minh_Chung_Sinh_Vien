@@ -3,6 +3,7 @@
 ## 📖 Tổng quan
 **Website Quản Lý Minh Chứng Sinh Viên** là một ứng dụng web được thiết kế để hỗ trợ sinh viên trong việc lưu trữ, quản lý và phân loại các minh chứng về thành tích học tập cũng như hoạt động ngoại khóa một cách kỹ thuật số. Hệ thống giúp tối ưu hóa quy trình đánh giá của nhà trường bằng cách cung cấp một nền tảng tập trung để nộp và xác minh các bằng chứng.<br>
 **Link website:** https://hdsv.azurewebsites.net/
+**Link OCR:** https://github.com/Fong62/EasyOCR.git
 
 ## 🚀 Các tính năng chính
 * **Quản lý tập trung:** Lưu trữ và tổ chức hồ sơ sinh viên, danh mục minh chứng và lịch sử hoạt động hiệu quả.
