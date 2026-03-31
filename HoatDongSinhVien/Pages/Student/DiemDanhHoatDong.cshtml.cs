@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HoatDongSinhVien.Pages.Student
 {
-    [Authorize(Roles ="HocSinh")]
+    //[Authorize(Roles ="HocSinh")]
     public class DiemDanhHoatDongModel : PageModel
     {
         private readonly InterfaceOCR _ocr;
@@ -30,13 +30,39 @@ namespace HoatDongSinhVien.Pages.Student
 
         public MinhChung KetQua { get; set; }
 
-        public IActionResult OnGet() 
+        public DateTime? ThoiGianDong { get; set; }
+
+        public async Task<IActionResult> OnGetAsync()
         {
+            var hoatDong = await _context.HoatDongs.FindAsync(IDHoatDong);
+            if (hoatDong != null && hoatDong.ChoPhepDiemDanh && hoatDong.ThoiGianDongDiemDanh.HasValue)
+            {
+                if (DateTime.Now > hoatDong.ThoiGianDongDiemDanh.Value)
+                {
+                    // HẾT GIỜ! Tự động khóa cửa lại và lưu xuống DB
+                    hoatDong.ChoPhepDiemDanh = false;
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            if (hoatDong == null || !hoatDong.ChoPhepDiemDanh)
+            {
+                TempData["Error"] = "Sự kiện này hiện đang đóng không thể điểm danh!";
+                return RedirectToPage("/Student/XemHoatDong", new { IDHoatDong = IDHoatDong });
+            }
+            ThoiGianDong = hoatDong?.ThoiGianDongDiemDanh;
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            var hoatDong = await _context.HoatDongs.FindAsync(IDHoatDong);
+            if (hoatDong == null || !hoatDong.ChoPhepDiemDanh)
+            {
+                TempData["Error"] = "Sự kiện này đã bị khóa điểm danh!";
+                return RedirectToPage("/Student/XemHoatDong", new { IDHoatDong = IDHoatDong });
+            }
+
             if (AnhThe == null || AnhThe.Length == 0)
             {
                 TempData["Error"] = "Vui lòng chọn ảnh thẻ sinh viên";

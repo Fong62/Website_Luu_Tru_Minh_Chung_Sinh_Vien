@@ -41,6 +41,8 @@ namespace HoatDongSinhVien.Models
 
         [StringLength(20)]
         public string TrangThaiHienThi { get; set; }
+        public bool ChoPhepDiemDanh { get; set; } = false;
+        public DateTime? ThoiGianDongDiemDanh { get; set; }
 
         // Khóa ngoại IDLinhVuc
         [StringLength(20)]

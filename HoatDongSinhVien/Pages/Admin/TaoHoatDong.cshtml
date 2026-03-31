@@ -12,6 +12,8 @@
 
         <div class="card-body">
             <form method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
                 <div class="mb-3">
                     <label asp-for="HoatDong.TenHoatDong" class="form-label fw-bold"></label>
                     <input asp-for="HoatDong.TenHoatDong" class="form-control" placeholder="Nhập tên hoạt động..." required />

@@ -13,7 +13,40 @@
         </div>
 
         <div class="card-body">
+            @if (Model.ThoiGianDong.HasValue)
+            {
+                <div class="alert alert-warning text-center shadow-sm mb-4">
+                    <h5 class="mb-0 fw-bold">
+                        ⏱️ Thời gian điểm danh còn lại: <span id="countdown-timer" class="text-danger">Đang tính...</span>
+                    </h5>
+                </div>
 
+                <script>
+                    // Lấy mốc thời gian đóng từ C# truyền xuống (đổi ra chuẩn ISO)
+                    var endTime = new Date('@Model.ThoiGianDong.Value.ToString("yyyy-MM-ddTHH:mm:ss")').getTime();
+
+                    // Cập nhật đồng hồ mỗi 1 giây
+                    var x = setInterval(function() {
+                        var now = new Date().getTime();
+                        var distance = endTime - now;
+
+                        // Tính toán số phút và giây
+                        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                        // Hiển thị ra màn hình
+                        document.getElementById("countdown-timer").innerHTML = minutes + " phút " + seconds + " giây ";
+
+                        // Hết giờ sẽ chuyển về trang xem hoạt động
+                        if (distance <= 0) {
+                            clearInterval(x);
+                            document.getElementById("countdown-timer").innerHTML = "ĐÃ HẾT GIỜ!";
+                            // Trình duyệt tự động đá văng về trang XemHoatDong
+                            window.location.href = "/xem-hoat-dong/@Model.IDHoatDong";
+                        }
+                    }, 1000);
+                </script>
+            }
             @* Thông báo *@
             @if (TempData["Error"] != null)
             {
@@ -74,3 +107,5 @@
         </div>
     </div>
 </div>
+
+

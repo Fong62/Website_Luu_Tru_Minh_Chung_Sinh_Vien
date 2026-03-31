@@ -55,18 +55,41 @@
     }
 </style>
 
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-4 shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-4 shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <div class="container py-4">
     <div class="card activity-card">
         <div class="card-header-custom d-flex justify-content-between align-items-center">
             <h3 class="mb-0 fw-bold"><i class="bi bi-info-circle"></i> Chi Tiết Hoạt Động</h3>
 
-            @if (User.IsInRole("GiaoVien") || User.IsInRole("Admin") || User.IsInRole("BanCanSu"))
+            @if (User.IsInRole("Admin") /*|| User.IsInRole("GiaoVien") || User.IsInRole("BanCanSu")*/)
             {
-                <a asp-page="/Admin/XemDanhSachDangKyHoatDong"
-                   asp-route-IDHoatDong="@Model.HoatDong.IDHoatDong"
-                   class="btn btn-light text-primary fw-bold shadow-sm">
-                    <i class="bi bi-clipboard-data"></i> DS đăng ký
-                </a>
+                <div class="d-flex gap-2">
+                    <form method="post" asp-page-handler="ToggleDiemDanh" asp-route-id="@Model.HoatDong.IDHoatDong">
+                        <button type="submit" class="btn @(Model.HoatDong.ChoPhepDiemDanh ? "btn-danger" : "btn-warning") fw-bold shadow-sm">
+                            <i class="bi @(Model.HoatDong.ChoPhepDiemDanh ? "bi-lock-fill" : "bi-unlock-fill")"></i>
+                            @(Model.HoatDong.ChoPhepDiemDanh ? "Đóng Điểm Danh" : "Mở Điểm Danh")
+                        </button>
+                    </form>
+                    <a asp-page="/Admin/XemDanhSachDangKyHoatDong"
+                       asp-route-IDHoatDong="@Model.HoatDong.IDHoatDong"
+                       class="btn btn-light text-primary fw-bold shadow-sm">
+                        <i class="bi bi-clipboard-data"></i> DS đăng ký
+                    </a>
+                </div>
             }
         </div>
 
@@ -123,20 +146,23 @@
                                 }
                             </div>
                         </div>
-                        <div class="col-12 col-lg-12">
-                            <div class="qr-container">
-                                <h6 class="fw-bold text-success mb-2 text-nowrap">QR Điểm Danh</h6>
-                                @if (!string.IsNullOrEmpty(Model.QRCodeDiemDanhUrl))
-                                {
-                                    <img src="@Model.QRCodeDiemDanhUrl" alt="QR Điểm Danh" class="img-fluid qr-img" />
-                                    <div class="small text-muted fst-italic">Quét để check-in</div>
-                                }
-                                else
-                                {
-                                    <div class="text-muted py-4">Chưa có mã QR</div>
-                                }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="col-12 col-lg-12">
+                                <div class="qr-container">
+                                    <h6 class="fw-bold text-success mb-2 text-nowrap">QR Điểm Danh</h6>
+                                    @if (!string.IsNullOrEmpty(Model.QRCodeDiemDanhUrl))
+                                    {
+                                        <img src="@Model.QRCodeDiemDanhUrl" alt="QR Điểm Danh" class="img-fluid qr-img" />
+                                        <div class="small text-muted fst-italic">Quét để check-in</div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-muted py-4">Chưa có mã QR</div>
+                                    }
+                                </div>
                             </div>
-                        </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -147,14 +173,34 @@
                 <i class="bi bi-arrow-left"></i> Quay lại danh sách
             </a>
 
-            @if (User.IsInRole("HocSinh"))
+            @if (User.IsInRole("HocSinh") || User.IsInRole("Admin"))
             {
-                <a asp-page="/Student/DiemDanhHoatDong"
-                   asp-route-IDHoatDong="@Model.IDHoatDong"
-                   class="btn btn-success fw-bold px-4">
-                    <i class="bi bi-geo-alt-fill"></i> Điểm danh ngay
-                </a>
+                 <a asp-page="/Student/DiemDanhHoatDong"
+                    asp-route-IDHoatDong="@Model.IDHoatDong"
+                    class="btn btn-success fw-bold px-4">
+                     <i class="bi bi-geo-alt-fill"></i> Điểm danh ngay
+                 </a>
             }
         </div>
     </div>
 </div>
+
+@if (Model.HoatDong.ChoPhepDiemDanh && Model.HoatDong.ThoiGianDongDiemDanh.HasValue)
+{
+    <script>
+        // Lấy mốc thời gian hết hạn
+        var endTime = new Date('@Model.HoatDong.ThoiGianDongDiemDanh.Value.ToString("yyyy-MM-ddTHH:mm:ss")').getTime();
+
+        var autoRefresh = setInterval(function () {
+            var now = new Date().getTime();
+
+            // Nếu thời gian hiện tại đã vượt qua mốc hết hạn
+            if (now >= endTime) {
+                clearInterval(autoRefresh); // Dừng canh giờ
+
+                // Tự động F5 (Tải lại trang)
+                window.location.reload();
+            }
+        }, 1000); // Kiểm tra mỗi 1 giây
+    </script>
+}
